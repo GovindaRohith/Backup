@@ -13,7 +13,34 @@ struct root
 typedef struct root *Root;
 Root insert(Root e,int n)
 {
-    
+    Node temp=e->start;
+    int side=0;
+    Node new=malloc(sizeof(Node));
+    new->item=n;
+    new->left=NULL;
+    new->right=NULL;
+    while ()
+    {
+        if(temp->item>n)
+        {
+            side=-1;
+            temp=temp->right;
+        }
+        else
+        {
+            side=1;
+            temp=temp->left;
+        }
+        if(temp->right==temp->left&&temp->right==NULL)
+        {
+            if(n>temp->item)
+            {
+                temp->right=new;
+            }
+            break;
+        }
+    }
+    return e;
 }
 int main()
 {
