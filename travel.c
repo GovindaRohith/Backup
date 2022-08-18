@@ -55,7 +55,7 @@ int main()
     int n;
     while(scanf("%d",&n)!=-1)
     {
-        
+        //assa
     }
     return 0;
 }
