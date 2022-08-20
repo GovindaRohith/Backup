@@ -1,5 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
+//1 1 -->l and r present
+//0 1 -->r only present
+//1 0 -->l only present
+//0 0 -->leaf 
 struct node
 {
     int item;
@@ -9,12 +13,70 @@ struct node
 typedef struct node *Node;
 struct root
 {
-    Node start;
+    Node start,leftmost;
 };
 typedef struct root Root;
-Root insert(Root r,int n)
+void printer(Root r)
 {
 
+}
+Root insert(Root r,int n)
+{
+    Node new=malloc(sizeof(Node));
+    new->item=n;
+    new->pos=00;
+    if(r.start==NULL)
+    {
+        new->right=NULL;
+        new->left=NULL;
+        r.start=new;
+    }
+    else
+    {
+        Node temp=r.start;
+        //parent pos change
+        while(temp!=NULL)
+        {
+            //propagation steps
+            if(n>temp->item&&(temp->pos==11||temp->pos==01)) temp=temp->right;
+            else if(n>temp->item&&(temp->pos==00||temp->pos==10))
+            {
+                new->right=temp->right;
+                temp->right=new;
+                if(temp->pos==00)
+                {
+                    new->left=temp;
+                    temp->pos=01;
+                }
+                else 
+                {
+                    new->left=temp->left;
+                    temp->pos=11;
+                }
+                break;
+            }
+            //propagation steps
+            else if(n<temp->item&&(temp->pos==11||temp->pos==10)) temp=temp->left;
+            else 
+            {
+                //n<temp->item &&(temp->pos==01||temp->pos==00)
+                if(temp->pos==01) 
+                {
+                    new->left=temp->left;
+                    temp->pos=11;
+                } 
+                else  
+                {
+                    new->left=NULL;
+                    temp->pos=10;
+                    r.leftmost=new;
+                }
+                temp->left=new;
+                new->right=temp;
+                break;
+            }
+        }
+    }
     return r;
 }
 int main()
