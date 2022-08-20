@@ -3,6 +3,7 @@
 struct node
 {
     int item;
+    unsigned short int pos;
     struct node *left,*right;
 };
 typedef struct node *Node;
@@ -13,7 +14,7 @@ struct root
 typedef struct root Root;
 Root insert(Root r,int n)
 {
-    
+
     return r;
 }
 int main()
@@ -31,6 +32,5 @@ int main()
     r=insert(r,7);
     r=insert(r,8);
     r=insert(r,12);
-
     return 0;
 }
