@@ -13,12 +13,23 @@ struct node
 typedef struct node *Node;
 struct root
 {
-    Node start,leftmost;
+    Node start;
 };
 typedef struct root Root;
+Node left_search(Node temp)
+{
+    while(temp->pos!=00)
+    {
+        temp=temp->left;
+    }
+    return temp;
+}
 void printer(Root r)
 {
-
+    while()
+    {
+        
+    }
 }
 Root insert(Root r,int n)
 {
@@ -69,7 +80,6 @@ Root insert(Root r,int n)
                 {
                     new->left=NULL;
                     temp->pos=10;
-                    r.leftmost=new;
                 }
                 temp->left=new;
                 new->right=temp;
