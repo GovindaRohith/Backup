@@ -18,7 +18,7 @@ struct root
 typedef struct root Root;
 Node left_search(Node temp)
 {
-    while(temp->pos!=00)
+    while(temp->pos!=00&&temp->pos!=01)
     {
         temp=temp->left;
     }
@@ -26,10 +26,30 @@ Node left_search(Node temp)
 }
 void printer(Root r)
 {
-    while()
+    Node temp=left_search(r.start);
+    while(temp!=NULL)
     {
-        
+        printf("%d ",temp->item);
+        if(temp->pos==01||temp->pos==11)
+        {
+            temp=left_search(temp->right);
+        }
+        else 
+        {
+            temp=temp->right;
+        }
     }
+}
+void verify(Node temp)
+{
+    if(temp->pos!=00&&temp->pos!=01) verify(temp->left);
+    printf("%d ",temp->item);
+    if(temp->pos!=00&&temp->pos!=10) verify(temp->right);
+}
+Root delete(Root r,int a)
+{
+    
+    return r;
 }
 Root insert(Root r,int n)
 {
@@ -94,15 +114,20 @@ int main()
     Root r;
     r.start=NULL;
     r=insert(r,6);
-    r=insert(r,5);
-    r=insert(r,2);
-    r=insert(r,3);
-    r=insert(r,10);
-    r=insert(r,1);
-    r=insert(r,9);
-    r=insert(r,11);
+    // r=insert(r,5);
+    // r=insert(r,2);
+    // r=insert(r,4);
+    // r=insert(r,3);
+    // r=insert(r,1);
     r=insert(r,7);
     r=insert(r,8);
+    r=insert(r,9);
+    r=insert(r,10);
+    r=insert(r,11);
     r=insert(r,12);
+    printer(r);
+    printf("\n");
+    verify(r.start);
+    printf("\n");
     return 0;
 }
