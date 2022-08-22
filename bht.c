@@ -1,30 +1,35 @@
 #include<stdio.h>
 #include<stdlib.h>
-struct node
+#define SIZE 100
+int min(int *arr)
 {
-    int item;
-    struct node *left,*right;
-};
-typedef struct node *Node;
-struct root
-{
-    Node start;
-};
-typedef struct root Root;
-int min(Root e)
-{
-    return 0;
+    if(arr!=NULL) return arr[0];
+    else return -1;
 }
-Root delete(Root e,int n)
+//      parent
+//         i
+//   c1           c2
+//    2*i          2*i+1 
+int * swap(int *arr,int i1,int i2)
 {
-    return e;
+    int temp=arr[i1];
+    arr[i1]=arr[i2];
+    arr[i2]=temp;
+    return arr;
 }
-Root insert(Root e,int n)
+int * insert(int *arr,int n)
 {
-    return e;
+    
+    return arr;
+}
+int * delete(int *arr,int n)
+{
+    return arr;
 }
 int main()
 {
-    
+    int *arr;
+    arr=(int *)malloc(sizeof(int)*SIZE);
+    free(arr);
     return 0;
 }
