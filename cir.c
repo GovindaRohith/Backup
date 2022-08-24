@@ -26,6 +26,11 @@ int * del(int *arr,int n)
     //end element index +   1 
     return arr;
 }
+int * delany(int *arr,int n,int k)
+{
+    
+    return arr;
+}
 void printer(int *arr,int n)
 {
     int i;
