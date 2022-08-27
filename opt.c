@@ -48,7 +48,29 @@ void verify(Node temp)
 }
 Root delete(Root r,int a)
 {
-    
+    Node temp=r.start;
+    int prev;
+    while(1>0)
+    {
+        if(a<temp->item&&temp->pos!=01&&temp->pos!=00)
+        {
+            temp=temp->left;
+        }
+        else if(a>temp->item&&temp->pos!=00&&temp->pos!=10)
+        {
+            temp=temp->right;
+        }
+        else if(a==temp->item)
+        {
+            //code here    
+            break;
+        }
+        else
+        {
+            printf("Element not found!");
+            break;
+        }
+    }
     return r;
 }
 Root insert(Root r,int n)
@@ -114,16 +136,15 @@ int main()
     Root r;
     r.start=NULL;
     r=insert(r,6);
-    // r=insert(r,5);
-    // r=insert(r,2);
-    // r=insert(r,4);
-    // r=insert(r,3);
-    // r=insert(r,1);
+    r=insert(r,5);
+    r=insert(r,2);
+    r=insert(r,3);
+    r=insert(r,10);
+    r=insert(r,1);
+    r=insert(r,9);
+    r=insert(r,11);
     r=insert(r,7);
     r=insert(r,8);
-    r=insert(r,9);
-    r=insert(r,10);
-    r=insert(r,11);
     r=insert(r,12);
     printer(r);
     printf("\n");
