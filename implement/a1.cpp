@@ -13,8 +13,6 @@ C.Insert
 
 */
 #include<iostream>
-#include<stdlib.h>
-#include<string>
 using namespace std;
 class Node
 {
@@ -115,6 +113,16 @@ bool search_a(Head h,string req)
     cout<<"Not found!!"<<endl;
     return false;
 }
+void free_mem(Head h)
+{
+    //function to free allocated space
+    Node * temp=h.start;
+    while(temp!=NULL)
+    {
+        free(temp);
+        temp=temp->next;
+    }
+}
 int main()
 {
     Head h;
@@ -128,5 +136,6 @@ int main()
     h=delete_b(h,"db");
     // h=delete_b(h,"ab");
     printer_func(h);
+    free_mem(h);
     return 0;
 }
