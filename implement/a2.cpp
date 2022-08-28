@@ -48,7 +48,7 @@ void print_func(Head h)
 }
 Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
 {
-    Node* entry=new Node();;
+    Node* entry=new Node();
     Node *temp=s.start;
     int counter=0;
     entry->name=name;
