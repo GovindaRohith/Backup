@@ -46,6 +46,64 @@ void verify(Node temp)
     printf("%d ",temp->item);
     if(temp->pos!=00&&temp->pos!=10) verify(temp->right);
 }
+Root deleter(Root r,Node temp)
+{
+    Node parent;
+    int isleft=1;
+    //1 -> left child
+    //0 ->right child
+    //if  left node 
+    //    temp->left ||->left  !=temp  --> parent=temp->right
+    //    temp->left ||->right !=temp  -->
+    //   temp->right->left ==temp   ->left node
+    //right node 
+    //    temp->right ||->left !=temp   --> 
+    //    temp->right ||->right !=temp  -->parent=temp->left
+    //   temp->left->right ==temp   -->right node
+    if(temp->pos==00)
+    {
+        if(temp->left==NULL||temp->right==NULL)
+        {
+            if(temp->left==NULL)
+            {
+                isleft=1;
+                parent=temp->right;
+            } 
+            else
+            {
+                isleft=0;
+                parent=temp->left;
+            } 
+        } 
+        else
+        {
+            if(temp->right->left==temp)
+            {
+                isleft=1;
+                parent=temp->right;
+            } 
+            if(temp->left->right ==temp)
+            {
+                isleft=0;
+                parent=temp->left;
+            } 
+        }
+        if(isleft==1)
+        {
+            parent->left=temp->left;
+        }
+        else
+        {
+            parent->right=temp->right;
+        }
+        return r;
+    }
+    else
+    {
+        temp->item=temp->right->item;
+        return deleter(r,temp->right);
+    }
+}
 Root delete(Root r,int a)
 {
     Node temp=r.start;
