@@ -120,7 +120,7 @@ Root delete(Root r,int a)
         }
         else if(a==temp->item)
         {
-            //code here    
+            return deleter(r,temp);
             break;
         }
         else
@@ -128,6 +128,7 @@ Root delete(Root r,int a)
             printf("Element not found!");
             break;
         }
+        if(temp->pos==00) break;
     }
     return r;
 }
