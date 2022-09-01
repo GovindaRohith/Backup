@@ -49,7 +49,7 @@ void verify(Node temp)
 Root deleter(Root r,Node temp)
 {
     Node parent;
-    int isleft=1;
+    int isleft;
     //1 -> left child
     //0 ->right child
     //if  left node 
@@ -68,11 +68,13 @@ Root deleter(Root r,Node temp)
             {
                 isleft=1;
                 parent=temp->right;
+                parent->left=temp->left;
             } 
             else
             {
                 isleft=0;
                 parent=temp->left;
+                parent->right=temp->right;
             } 
         } 
         else
@@ -91,17 +93,31 @@ Root deleter(Root r,Node temp)
         if(isleft==1)
         {
             parent->left=temp->left;
+            if(parent->pos==11) parent->pos=01;
+            if(parent->pos==10) parent->pos=00;
         }
         else
         {
             parent->right=temp->right;
+            if(parent->pos==11) parent->pos=10;
+            if(parent->pos==01) parent->pos=00;
+            
         }
+        free(temp);
         return r;
     }
     else
     {
-        temp->item=temp->right->item;
-        return deleter(r,temp->right);
+        if(temp->pos==01||temp->pos==11)
+        {
+            temp->item=left_search(temp->right)->item;
+            return deleter(r,left_search(temp->right));
+        }
+        else 
+        {
+            temp->item=temp->right->item;
+            return deleter(r,temp->right);
+        }
     }
 }
 Root delete(Root r,int a)
@@ -128,7 +144,6 @@ Root delete(Root r,int a)
             printf("Element not found!");
             break;
         }
-        if(temp->pos==00) break;
     }
     return r;
 }
@@ -190,6 +205,24 @@ Root insert(Root r,int n)
     }
     return r;
 }
+void free_mem(Root r)
+{
+    Node temp=left_search(r.start),temp2;
+    while(temp!=NULL)
+    {
+        temp2=temp;
+        if(temp->pos==01||temp->pos==11)
+        {
+            temp=left_search(temp->right);
+        }
+        else 
+        {
+            temp=temp->right;
+        }
+        free(temp2);
+    }
+
+}
 int main()
 {
     Root r;
@@ -206,8 +239,12 @@ int main()
     r=insert(r,8);
     r=insert(r,12);
     printer(r);
+    printf("After del \n");
+    // check for 6,5
+    delete(r,5);
+    delete(r,12);
+    printer(r); 
     printf("\n");
-    verify(r.start);
-    printf("\n");
+    free_mem(r);
     return 0;
 }
