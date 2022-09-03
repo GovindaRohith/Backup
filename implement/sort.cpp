@@ -8,9 +8,13 @@ using namespace std;
 //floor of by 2
 void printer(int *arr)
 {
-    for(int i=2;i<=arr[0];i++)
+    if(arr[0]==0) cout<<"Empty array try inserting some data";
+    else
     {
-        cout<<arr[i]<<"   ";
+        for(int i=1;i<=arr[0];i++)
+        {
+            cout<<arr[i]<<"   ";
+        }
     }
     cout<<endl;
 }
@@ -71,14 +75,14 @@ int * heapify(int *arr)
 }
 int * heapsort(int *arr)
 {
-    int i,size=arr[0],temp;
-    arr[arr[0]+1]=arr[1];
+    int i,size=arr[0],temp=arr[1];
     for(i=1;i<=size;i++)
     {
+        temp=arr[1];
         arr=heapify(arr);
-        arr[arr[0]+1]=arr[1];
+        arr[arr[0]+1]=temp;
     }
-    arr[0]=size+1;
+    arr[0]=size;
     return arr;
 }
 
@@ -89,11 +93,8 @@ int main()
     arr[0]=0;
     int temp;
     arr=insert(arr,6);
-    arr=insert(arr,9);
-    arr=insert(arr,1);
-    arr=insert(arr,8);
-    arr=insert(arr,23);
-    arr=insert(arr,48);
+    arr=insert(arr,5);
+    arr=insert(arr,4);
     arr=heapsort(arr);
     printer(arr);
     free(arr);

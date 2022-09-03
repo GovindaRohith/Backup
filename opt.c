@@ -60,65 +60,68 @@ Root deleter(Root r,Node temp)
     //    temp->right ||->left !=temp   --> 
     //    temp->right ||->right !=temp  -->parent=temp->left
     //   temp->left->right ==temp   -->right node
-    if(temp->pos==00)
+    if(temp->left==NULL||temp->right==NULL)
     {
-        if(temp->left==NULL||temp->right==NULL)
+        if(temp->left==NULL)
         {
-            if(temp->left==NULL)
-            {
-                isleft=1;
-                parent=temp->right;
-                parent->left=temp->left;
-            } 
-            else
-            {
-                isleft=0;
-                parent=temp->left;
-                parent->right=temp->right;
-            } 
+            isleft=1;
+            parent=temp->right;
+            parent->left=temp->left;
         } 
         else
         {
-            if(temp->right->left==temp)
-            {
-                isleft=1;
-                parent=temp->right;
-            } 
-            if(temp->left->right ==temp)
-            {
-                isleft=0;
-                parent=temp->left;
-            } 
-        }
-        if(isleft==1)
-        {
-            parent->left=temp->left;
-            if(parent->pos==11) parent->pos=01;
-            if(parent->pos==10) parent->pos=00;
-        }
-        else
-        {
+            isleft=0;
+            parent=temp->left;
             parent->right=temp->right;
-            if(parent->pos==11) parent->pos=10;
-            if(parent->pos==01) parent->pos=00;
-            
-        }
-        free(temp);
-        return r;
+        } 
+    } 
+    else
+    {
+        if(temp->right->left==temp)
+        {
+            isleft=1;
+            parent=temp->right;
+        } 
+        if(temp->left->right ==temp)
+        {
+            isleft=0;
+            parent=temp->left;
+        } 
+    }
+    if(isleft==1)
+    {
+        parent->left=temp->left;
+        if(parent->pos==11) parent->pos=01;
+        if(parent->pos==10) parent->pos=00;
     }
     else
     {
+        parent->right=temp->right;
+        if(parent->pos==11) parent->pos=10;
+        if(parent->pos==01) parent->pos=00;
+        
+    }
+    free(temp);
+    return r;
+}
+Node opt(Node temp)
+{
+    Node temp2;
+    while(temp->pos!=00)
+    {
         if(temp->pos==01||temp->pos==11)
         {
-            temp->item=left_search(temp->right)->item;
-            return deleter(r,left_search(temp->right));
+            temp2=left_search(temp->right);
+            temp->item=temp2->item;
+            temp=temp2;
         }
         else 
         {
             temp->item=temp->right->item;
-            return deleter(r,temp->right);
+            temp=temp->right;
         }
     }
+    return temp;
 }
 Root delete(Root r,int a)
 {
@@ -136,7 +139,7 @@ Root delete(Root r,int a)
         }
         else if(a==temp->item)
         {
-            return deleter(r,temp);
+            return deleter(r,opt(temp));
             break;
         }
         else
@@ -241,7 +244,7 @@ int main()
     printer(r);
     printf("After del \n");
     // check for 6,5
-    delete(r,5);
+    delete(r,6);
     delete(r,12);
     printer(r); 
     printf("\n");
