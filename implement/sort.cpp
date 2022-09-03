@@ -1,29 +1,21 @@
-#include<stdio.h>
+#include<iostream>
 #include<stdlib.h>
-#define INIT 100
-int min(int *arr)
-{
-    if(arr!=NULL) return arr[1];
-    else return -1;
-}
-
+using namespace std;
+//         1
+//    2         3
+//  4     5    6      7
+//8   9  A  B C  D  E   F
+//floor of by 2
 void printer(int *arr)
 {
-    int i;
-    for(i=1;i<=arr[0];i++)
+    for(int i=2;i<=arr[0];i++)
     {
-        printf("%d ",arr[i]);
+        cout<<arr[i]<<"   ";
     }
-    printf("\n");
+    cout<<endl;
 }
-//      parent
-//         i
-//   c1           c2
-//   2*i          2*i+1 
-// parent < children
 int * insert(int *arr,int n)
 {
-    // index current size given
     int index=arr[0],temp;
     if(index+1==99) 
     {
@@ -49,7 +41,7 @@ int * insert(int *arr,int n)
     arr[0]++;
     return arr;
 }
-int * delete(int *arr)
+int * heapify(int *arr)
 {
     int index=1,temp;
     arr[1]=arr[arr[0]];
@@ -77,18 +69,32 @@ int * delete(int *arr)
     arr[0]=arr[0]-1;
     return arr;
 }
+int * heapsort(int *arr)
+{
+    int i,size=arr[0],temp;
+    arr[arr[0]+1]=arr[1];
+    for(i=1;i<=size;i++)
+    {
+        arr=heapify(arr);
+        arr[arr[0]+1]=arr[1];
+    }
+    arr[0]=size+1;
+    return arr;
+}
+
 int main()
 {
-    // arr[0] ==>INIT
-    int *arr;
-    arr=(int *)malloc(sizeof(int)*INIT);
+    int n=10,i,*arr;
+    arr=(int *)malloc(sizeof(int)*(n+1));
     arr[0]=0;
+    int temp;
+    arr=insert(arr,6);
+    arr=insert(arr,9);
+    arr=insert(arr,1);
     arr=insert(arr,8);
     arr=insert(arr,23);
     arr=insert(arr,48);
-    printer(arr);
-    printf("The minimum value of the BHT is %d \n",min(arr));
-    arr=delete(arr);
+    arr=heapsort(arr);
     printer(arr);
     free(arr);
     return 0;
