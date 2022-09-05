@@ -35,6 +35,7 @@
     "string_view": "cpp",
     "initializer_list": "cpp",
     "utility": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "stdio.h": "c"
   }
 }
