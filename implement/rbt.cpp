@@ -6,7 +6,7 @@ class Node
     public :
     int item;
     bool isblack=true;
-    Node *left,*right;
+    Node *left,*right,*parent;
 };
 class Root
 {
@@ -49,12 +49,111 @@ Root left(Root r,Node *parent,Node *x)
     }
     return r;
 }
+Root color(Root e,Node *temp)
+{
+    Node *parent=temp->parent,*uncle,*gp=temp->parent->parent;
+    temp->isblack=false;
+    if(temp==e.start)
+    {
+        temp->isblack=true;
+        return e;
+    }
+    while(temp!=e.start&&temp->parent->isblack == false)
+    {
+    if(gp->left==parent)
+    {
+        uncle=gp->right;
+        if(uncle->isblack)
+        {
+            if(parent->right==temp)
+            {
+                e=left(e,gp->parent->parent,gp->parent);
+                temp=gp->parent;
+            }
+            else    
+            {
+                e=right(e,gp->parent->parent,gp->parent);
+                temp=gp->parent;
+            }
+        }
+        else
+        {
+            gp->isblack=false;
+            parent->isblack=true;
+            uncle->isblack=true;
+            return e;
+        }
+    }
+    else
+    {
+        uncle=gp->left;
+        if(uncle->isblack)
+        {
+            if(parent->right==temp)
+            {
+
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+
+            return e;
+        }
+    }
+    parent=temp->parent;
+    gp=parent->parent;
+    }
+    
+    return e;
+}
 Root insert(Root e,int a)
 {
-
+    Node *temp=e.start;
+    Node *entry=new Node();
+    entry->left=NULL;
+    entry->right=NULL;
+    entry->item=a;
+    if(temp==NULL)
+    {
+        e.start=entry;
+        entry->isblack=true;
+        entry->parent=NULL;
+        return e;
+    }
+    while(temp!=NULL)
+    {
+        if(a>temp->item)
+        {
+            if(temp->right==NULL)
+            {
+                entry->parent=temp;
+                temp->right=entry; 
+                e=color(e,entry);
+                return e; 
+            }
+            else temp=temp->right;
+        }
+        else
+        {
+            if(temp->left==NULL)
+            {
+                entry->parent=temp;
+                temp->right=entry; 
+                e=color(e,entry);
+                return e; 
+            }
+            else temp=temp->left;
+        }
+    }
     return e;
 }
 int main()
 {
+    Root r;
+    r.start=NULL;
     return 0;
 }
