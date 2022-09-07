@@ -6,51 +6,87 @@
 #include<iostream>
 #include<stdlib.h>
 using namespace std;
-int * insert_a(int *arr,int age,int n)
-{   
-    if(arr[n+1]==n+1)
+void print_func(int *arr,int n)
+{
+    //arr[n]=front  -1 empty
+    //arr[n+1]=back/rear  -1 empty
+    //front denotes the starting element index
+    //rear denotes the ending element index
+    //clock wise
+    int i;
+    if(arr[n+1]==-1)
     {
-        printf("Array  full");
+        cout<<"Empty array try inserting some elements"<<endl;
+    }
+    else
+    {
+    for(i=arr[n];i<arr[n+1]&&i<=n-1;i=(i+1)%n)
+    {
+        cout<<arr[i]<<"  ";
+        //updatind condition
+    }
+    cout<<arr[arr[n+1]]<<endl;
+    }
+}
+int * insert_a(int *arr,int n,int a)
+{
+    //rear<front
+    //arr[n+1]<arr[n]
+    //front=rear+1%n
+    if(((arr[n]-arr[n+1]==1)&&arr[n+1]!=-1)||(arr[n]==0&&arr[n+1]==n-1))
+    {
+        cout<<"Array full"<<endl;
         return arr;
     }
-    arr[arr[n+1]]=age;
-    arr[n+1]++;
+    else
+    {
+    arr[n+1]=(arr[n+1]+1)%n;
+    arr[arr[n+1]]=a;
     return arr;
+    }
 }
 int * delete_b(int *arr,int n)
 {
-    if(arr[n+1]==0) 
+    //rear<front
+    //arr[n+1]<arr[n]
+    if(arr[n+1]<=-1)
     {
-        printf("Empty array");
+        cout<<"Empty array"<<endl;
         return arr;
     }
-    arr[n]=arr[n]+1;
-    //n-1 last 
-    //n    first
-    //index to have first element
-    //n+1  end
-    //end element index +   1 
-    return arr;
-}
-void print_func(int *arr,int n)
-{
-    int i;
-    if(arr[n]==arr[n+1]) cout<<"Empty array!!!";
-    for(i=arr[n];i<arr[n+1];i++)
+    if(arr[n+1]==arr[n])
     {
-        cout<<arr[i]<<" ";
+        arr[n+1]=-1;
+        return arr;
     }
-    cout<<endl;
+    else
+    {
+        arr[n]=(arr[n]+1)%n;
+        return arr;
+    }
 }
 int main()
 {
-    int n=100,*arr;
-    arr=(int *)malloc(sizeof(int )*(n+2));
+    int *arr,n=10;
+    arr=(int *)malloc(sizeof(int)*(n+2));
     arr[n]=0;
-    arr[n+1]=0;
-    arr=insert_a(arr,18,n);
-    arr=insert_a(arr,15,n);
-    arr=insert_a(arr,18,n);
+    arr[n+1]=-1;
+    arr=insert_a(arr,n,1);
+    arr=insert_a(arr,n,2);
+    arr=insert_a(arr,n,3);
+    arr=insert_a(arr,n,4);
+    arr=insert_a(arr,n,5);
+    arr=insert_a(arr,n,6);
+    arr=insert_a(arr,n,7);
+    arr=insert_a(arr,n,8);
+    arr=delete_b(arr,n);
+    arr=delete_b(arr,n);
+    arr=delete_b(arr,n);
+    arr=delete_b(arr,n);
+    arr=insert_a(arr,n,9);
+    arr=insert_a(arr,n,10);
+    arr=delete_b(arr,n);
+    arr=delete_b(arr,n);
     arr=delete_b(arr,n);
     arr=delete_b(arr,n);
     arr=delete_b(arr,n);
