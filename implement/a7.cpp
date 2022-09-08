@@ -1,3 +1,5 @@
+// 1.Each node contains the Age of a faculty.
+// 2.You should implement take input an array and print sorted one
 #include<iostream>
 #include<stdlib.h>
 using namespace std;
