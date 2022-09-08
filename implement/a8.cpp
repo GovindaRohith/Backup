@@ -85,7 +85,7 @@ Root color(Root e,Node *temp)
             gp->isblack=false;
             parent->isblack=true;
             uncle->isblack=true;
-            return e;
+            temp=gp;
         }
     }
     else
@@ -95,23 +95,26 @@ Root color(Root e,Node *temp)
         {
             if(parent->right==temp)
             {
-
+                e=right(e,gp->parent->parent,gp->parent);
+                temp=gp->parent;  
             }
             else
             {
-                
+                e=left(e,gp->parent->parent,gp->parent);
+                temp=gp->parent;
             }
         }
         else
         {
-
-            return e;
+            gp->isblack=false;
+            parent->isblack=true;
+            uncle->isblack=true;
+            temp=gp;
         }
     }
     parent=temp->parent;
     gp=parent->parent;
     }
-    
     return e;
 }
 Root insert(Root e,int a)
