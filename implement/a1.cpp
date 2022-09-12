@@ -78,18 +78,40 @@ Head delete_b(Head h,string name)
     cout<<"Not found!!"<<endl;
     return h;
 }
-Head insert_c(Head h,string name,int age,string gender,string dept)
+Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
 {
-    Node* entry=NULL;
-    entry = new Node();
+    Node* entry=new Node();
+    Node *temp=s.start;
+    int counter=0;
     entry->name=name;
-    entry->dept=dept;
     entry->age=age;
     entry->gender=gender;
-    entry->next=h.start;
-    h.start=entry;
-    return h;
+    entry->dept=dept;
+    if(pos==1)
+    {
+        entry->next=s.start;
+        s.start=entry;
+        return s;
+    }
+    while(temp!=NULL)
+    {
+        counter++;
+        if(counter==pos-1)
+        {
+            entry->next=temp->next;
+            temp->next=entry;
+            temp=entry;
+            break;
+        }
+        else  temp=temp->next;
+    }
+    if(temp==NULL)
+    {
+        cout<<"Not valid"<<endl;
+    }
+    return s;
 }
+
 bool search_a(Head h,string req)
 {
     Node *temp=h.start;
@@ -127,14 +149,14 @@ int main()
 {
     Head h;
     h.start=NULL;
-    h=insert_c(h,"ab",18,"Male","cse");
-    h=insert_c(h,"bb",18,"Female","ES");
-    h=insert_c(h,"cb",18,"Female","EE");
-    h=insert_c(h,"db",18,"Female","CSE");
+    h=insert_c(h,1,"ab",18,"Male","cse");
+    h=insert_c(h,2,"bb",18,"Female","ES");
+    h=insert_c(h,3,"cb",18,"Female","EE");
+    h=insert_c(h,4,"db",18,"Female","CSE");
     printer_func(h);
     cout<<"After the delete"<<endl;
     h=delete_b(h,"db");
-    // h=delete_b(h,"ab");
+    h=delete_b(h,"ab");
     printer_func(h);
     free_mem(h);
     return 0;
