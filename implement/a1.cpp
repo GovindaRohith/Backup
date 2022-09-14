@@ -1,21 +1,24 @@
 /*
+Data Structures(CS2233)
+Assignment 1 (Implementation of linked list)
+code by
 Govinda Rohith Y
 CS21BTECH11062
-Problem 1:
+*/
+/*
 Question :
 Each node contains the Name, Age, Gender, and Department of
 a faculty. Assume that Name is unique
-
 You should implement  
 A.Search by Name
 B.Delete by Name
 C.Insert
-
 */
 #include<iostream>
 using namespace std;
 class Node
 {
+    //Individual Node
     public:
     string name,dept,gender;
     int age;
@@ -24,10 +27,12 @@ class Node
 class Head
 {
     public:
+    //Stores the head of the linked list
     Node *start;
 };
 void printer_func(Head h)
 {
+    //function to print whole linked list
     Node *temp=h.start;
     while(temp!=NULL)
     {
@@ -40,18 +45,32 @@ void printer_func(Head h)
         temp=temp->next;
     }
 }
+void free_mem(Head h)
+{
+    //function to free allocated space
+    Node * temp=h.start,*temp2;
+    while(temp!=NULL)
+    {
+        temp2=temp;
+        temp=temp->next;
+        delete temp2;
+    }
+}
 Head delete_b(Head h,string name)
 {
+    //Delete a Node by a given name
     Node* prev=h.start,*post;
     if(prev==NULL)
     {
+        //Empty linked list case
         cout<<"Empty list try to insert some data"<<endl;
         return h;
     }
     else if(prev->name==name)
     {
+        //Required node is beggining of the linked list
         h.start=prev->next;
-        free(prev);
+        delete prev;
         return h;
     }
     else
@@ -61,15 +80,17 @@ Head delete_b(Head h,string name)
         {
             if(post->name==name)
             {
+                //delete operation
                 Node *temp;
                 temp=post;
                 prev->next=post->next;
                 post=post->next;
-                free(temp);
+                delete temp;
                 return h;
             }
             else
             {
+                //propagation steps
                 prev=post;
                 post=post->next;
             }
@@ -80,6 +101,8 @@ Head delete_b(Head h,string name)
 }
 Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
 {
+    //function to insert data in any valid position 'pos' which starts from 1
+    //pos=1 for standard linked list insertion
     Node* entry=new Node();
     Node *temp=s.start;
     int counter=0;
@@ -89,12 +112,14 @@ Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
     entry->dept=dept;
     if(pos==1)
     {
+        //Standard linked list insertion
         entry->next=s.start;
         s.start=entry;
         return s;
     }
     while(temp!=NULL)
     {
+        //insert at any position starting from 1
         counter++;
         if(counter==pos-1)
         {
@@ -107,16 +132,18 @@ Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
     }
     if(temp==NULL)
     {
-        cout<<"Not valid"<<endl;
+        //Not valid  case
+        cout<<"Entered position is not valid"<<endl;
     }
     return s;
 }
-
 bool search_a(Head h,string req)
 {
+    //returns true if there exists a node with given name else false
     Node *temp=h.start;
     if(temp==NULL)
     {
+        //Empty linked list case
         cout<<"Empty list try to insert some data"<<endl;
         return false;
     }
@@ -124,6 +151,8 @@ bool search_a(Head h,string req)
     {
         if(temp->name==req)
         {
+            //Prints Required details
+            cout<<"****Requested Details****"<<endl;
             cout<<"Name           :"<<temp->name<<endl;
             cout<<"Age            :"<<temp->age<<endl;
             cout<<"Gender         :"<<temp->gender<<endl;
@@ -135,26 +164,18 @@ bool search_a(Head h,string req)
     cout<<"Not found!!"<<endl;
     return false;
 }
-void free_mem(Head h)
-{
-    //function to free allocated space
-    Node * temp=h.start;
-    while(temp!=NULL)
-    {
-        free(temp);
-        temp=temp->next;
-    }
-}
+
 int main()
 {
     Head h;
     h.start=NULL;
     h=insert_c(h,1,"ab",18,"Male","cse");
-    h=insert_c(h,2,"bb",18,"Female","ES");
+    h=insert_c(h,1,"bb",18,"Female","ES");
     h=insert_c(h,3,"cb",18,"Female","EE");
     h=insert_c(h,4,"db",18,"Female","CSE");
     printer_func(h);
-    cout<<"After the delete"<<endl;
+    search_a(h,"ab");
+    search_a(h,"aa");
     h=delete_b(h,"db");
     h=delete_b(h,"ab");
     printer_func(h);
