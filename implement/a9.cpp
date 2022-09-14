@@ -23,6 +23,22 @@ class Root
     Node *start;
 };
 void act(Node *temp,int age);
+void printer(Node *temp)
+{
+    int i;
+    for(i=0;i<temp->no;i++)
+    {
+        if(temp->child[i]!=NULL)
+        {
+            printer(temp->child[i]);
+        }
+        cout<<temp->keys[i]<<"  ";
+    }
+    if(temp->child[i]!=NULL)
+    {
+        printer(temp->child[i]);
+    }
+}
 void ins_spilt(Node *temp)
 {
     //0 1       2         3 4  
