@@ -34,6 +34,7 @@ void printer_func(Head h)
 {
     //function to print whole linked list
     Node *temp=h.start;
+    if(temp==NULL) cout<<"Empty list try to insert some data"<<endl;
     while(temp!=NULL)
     {
         cout<<"***********************"<<endl;
@@ -71,6 +72,7 @@ Head delete_b(Head h,string name)
         //Required node is beggining of the linked list
         h.start=prev->next;
         delete prev;
+        cout<<"***  Deleted Successfully    ****"<<endl;
         return h;
     }
     else
@@ -86,6 +88,7 @@ Head delete_b(Head h,string name)
                 prev->next=post->next;
                 post=post->next;
                 delete temp;
+                cout<<"***  Deleted Successfully    ****"<<endl;
                 return h;
             }
             else
@@ -115,6 +118,7 @@ Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
         //Standard linked list insertion
         entry->next=s.start;
         s.start=entry;
+        cout<<"***  Inserted Successfully   ****"<<endl;
         return s;
     }
     while(temp!=NULL)
@@ -126,6 +130,7 @@ Head insert_c(Head s,int pos,string name,int age,string gender,string dept)
             entry->next=temp->next;
             temp->next=entry;
             temp=entry;
+            cout<<"***  Inserted Successfully   ****"<<endl;
             break;
         }
         else  temp=temp->next;
@@ -152,7 +157,7 @@ bool search_a(Head h,string req)
         if(temp->name==req)
         {
             //Prints Required details
-            cout<<"****Requested Details****"<<endl;
+            cout<<"**** Requested Details   ****"<<endl;
             cout<<"Name           :"<<temp->name<<endl;
             cout<<"Age            :"<<temp->age<<endl;
             cout<<"Gender         :"<<temp->gender<<endl;
@@ -173,11 +178,14 @@ int main()
     h=insert_c(h,1,"bb",18,"Female","ES");
     h=insert_c(h,3,"cb",18,"Female","EE");
     h=insert_c(h,4,"db",18,"Female","CSE");
-    printer_func(h);
     search_a(h,"ab");
     search_a(h,"aa");
     h=delete_b(h,"db");
     h=delete_b(h,"ab");
+    h=delete_b(h,"bb");
+    h=delete_b(h,"cb");
+    printer_func(h);
+    h=insert_c(h,1,"ab",18,"Male","cse");
     printer_func(h);
     free_mem(h);
     return 0;
