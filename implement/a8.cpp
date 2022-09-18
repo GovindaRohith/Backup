@@ -20,9 +20,16 @@ class Root
 void printer(Node *temp)
 {
     if(temp->left!=NULL) printer(temp->left);
-    if(temp->isblack) cout<<temp->item<<"->"<<"Black color ";
-    else cout<<temp->item<<"->"<<"Red color ";
+    if(temp->isblack) cout<<temp->item<<"->"<<"Black color ,";
+    else cout<<temp->item<<"->"<<"Red color ,";
     if(temp->right!=NULL) printer(temp->right);
+}
+void post(Node *temp)
+{
+    if(temp->isblack) cout<<temp->item<<"-> "<<"Black color ,";
+    else cout<<temp->item<<"->"<<"Red color ,";
+    if(temp->left!=NULL) post(temp->left);
+    if(temp->right!=NULL) post(temp->right);
 }
 void free_mem(Node *temp)
 {
@@ -65,29 +72,42 @@ Root left(Root r,Node *parent,Node *x)
 }
 Root color(Root e,Node *temp)
 {
-    Node *parent=temp->parent,*uncle,*gp=temp->parent->parent;
+    Node *parent,*uncle,*gp=NULL;
     temp->isblack=false;
     if(temp==e.start)
     {
         temp->isblack=true;
         return e;
     }
+    if(temp->parent->isblack) return e;
+    //                 ****Inequality check here ******
     while(temp!=e.start&&temp->parent->isblack == false)
     {
+    parent=temp->parent;
+    gp=parent->parent;
     if(gp->left==parent)
     {
         uncle=gp->right;
-        if(uncle->isblack)
+        if(uncle==NULL||uncle->isblack)
         {
-            if(parent->right==temp)
+            if(uncle==NULL)
             {
-                e=left(e,gp->parent->parent,gp->parent);
-                temp=gp->parent;
+                e=right(e,gp->parent,gp);
+                temp=parent;
+                temp->right->isblack=false;
             }
-            else    
+            else
             {
-                e=right(e,gp->parent->parent,gp->parent);
-                temp=gp->parent;
+                if(parent->right==temp)
+                {
+                    e=left(e,gp->parent,gp);
+                    temp=parent;
+                }
+                else    
+                {
+                    e=right(e,gp->parent,gp);
+                    temp=parent;
+                }
             }
         }
         else
@@ -101,17 +121,28 @@ Root color(Root e,Node *temp)
     else
     {
         uncle=gp->left;
-        if(uncle->isblack)
+        if(uncle==NULL||uncle->isblack)
         {
-            if(parent->right==temp)
+            if(uncle==NULL)
             {
-                e=right(e,gp->parent->parent,gp->parent);
-                temp=gp->parent;  
+                // e=right(e,gp->parent,gp);
+                // temp=parent;
+                e=left(e,gp->parent,gp);
+                temp=parent;
+                temp->left->isblack=false;
             }
             else
             {
-                e=left(e,gp->parent->parent,gp->parent);
-                temp=gp->parent;
+                if(parent->right==temp)
+                {
+                    e=right(e,gp->parent,gp);
+                    temp=parent;  
+                }
+                else
+                {
+                    e=left(e,gp->parent,gp);
+                    temp=parent;
+                }
             }
         }
         else
@@ -122,9 +153,8 @@ Root color(Root e,Node *temp)
             temp=gp;
         }
     }
-    parent=temp->parent;
-    gp=parent->parent;
     }
+    e.start->isblack=true;
     return e;
 }
 Root insert(Root e,int a)
@@ -139,8 +169,6 @@ Root insert(Root e,int a)
         e.start=entry;
         entry->isblack=true;
         entry->parent=NULL;
-        printer(e.start);
-        cout<<endl;
         return e;
     }
     while(temp!=NULL)
@@ -152,8 +180,6 @@ Root insert(Root e,int a)
                 entry->parent=temp;
                 temp->right=entry; 
                 e=color(e,entry);
-                printer(e.start);
-                cout<<endl;
                 return e; 
             }
             else temp=temp->right;
@@ -165,8 +191,6 @@ Root insert(Root e,int a)
                 entry->parent=temp;
                 temp->left=entry; 
                 e=color(e,entry);
-                printer(e.start);
-                cout<<endl;
                 return e; 
             }
             else temp=temp->left;
@@ -180,18 +204,16 @@ int main()
     r.start=NULL;
     r=insert(r,6);
     r=insert(r,5);
-    cout<<"came here"<<endl;
     r=insert(r,2);
-    cout<<"came here"<<endl;
     r=insert(r,3);
     r=insert(r,10);
     r=insert(r,1);
     r=insert(r,9);
-    r=insert(r,11);
-    r=insert(r,7);
-    r=insert(r,8);
-    r=insert(r,12);
-    printer(r.start);
+    // r=insert(r,11);
+    // r=insert(r,7);
+    // r=insert(r,8);
+    // r=insert(r,12);
+    post(r.start);
     cout<<endl;
     free_mem(r.start);
     return 0;

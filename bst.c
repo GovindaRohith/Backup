@@ -13,8 +13,8 @@ struct root
 typedef struct root Root;
 void printer(Node temp)
 {
-    if(temp->left!=NULL) printer(temp->left);
     printf("%d,",temp->item);
+    if(temp->left!=NULL) printer(temp->left);
     if(temp->right!=NULL) printer(temp->right);
 }
 int search (Root e,int n)
@@ -153,16 +153,16 @@ int main()
     r=insert(r,5);
     r=insert(r,2);
     r=insert(r,3);
-    r=insert(r,10);
-    r=insert(r,1);
-    r=insert(r,9);
-    r=insert(r,11);
-    r=insert(r,7);
-    r=insert(r,8);
-    r=insert(r,12);
+    // r=insert(r,10);
+    // r=insert(r,1);
+    // r=insert(r,9);
+    // r=insert(r,11);
+    // r=insert(r,7);
+    // r=insert(r,8);
+    // r=insert(r,12);
     printer(r.start);
     printf("\n");
-    delete(r,6);
+    delete(r,6);// check for seg fault
     printer(r.start);
     printf("\n");   
     return 0;
