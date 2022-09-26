@@ -1,3 +1,10 @@
+/*
+Code by
+Govinda Rohith Y
+CS21BTECH11062
+Assignment 4
+Implmentation of Binary search tree
+*/
 // 1. Each node contains the Age, Name, Gender, and
 // Department of a faculty. Assume the Name is unique
 // 2. You should implement  
@@ -18,25 +25,33 @@ class Root
     public :
     Node *start;
 };
-void printer(Node *temp)
+void inOrder_rec(Node *temp)
 {
-    if(temp->left!=NULL) printer(temp->left);
+    //prints data according to the inorder traversal of the tree
+    if(temp->left!=NULL) inOrder_rec(temp->left);
     cout<<"***********************"<<endl;
     cout<<"Name           :"<<temp->name<<endl;
     cout<<"Age            :"<<temp->age<<endl;
     cout<<"Gender         :"<<temp->gender<<endl;
     cout<<"Department     :"<<temp->dept<<endl;
     cout<<"***********************"<<endl;
-    if(temp->right!=NULL) printer(temp->right);
+    if(temp->right!=NULL) inOrder_rec(temp->right);
+}
+void inOrder(Node *temp)
+{
+    if(temp==NULL) cout<<"Empty tree try to insert some data"<<endl;
+    else inOrder_rec(temp);
 }
 void free_mem(Node *temp)
 {
+    //frees allocated memory
     if(temp->left!=NULL) free_mem(temp->left);
     if(temp->right!=NULL) free_mem(temp->right);
-    free(temp);
+    delete temp;
 }
 Root insert_a(Root e,int age,string name,string gender,string dept)
 {
+    //inserts node according to property of BST and returns the root of BST
     Node *temp=e.start;
     Node *entry=new Node();
     entry->age=age;
@@ -48,6 +63,7 @@ Root insert_a(Root e,int age,string name,string gender,string dept)
     if(temp==NULL)
     {
         e.start=entry;
+        cout<<"*** Inserted Successfully *****"<<endl;
         return e;
     }
     else
@@ -56,18 +72,29 @@ Root insert_a(Root e,int age,string name,string gender,string dept)
         {
             if(name>temp->name)
             {
+                //propagation to right side of the tree
                 if(temp->right==NULL)
                 {
                     temp->right=entry; 
+                    cout<<"*** Inserted Successfully *****"<<endl;
                     return e; 
                 }
                 else temp=temp->right;
             }
+            else if(name==temp->name)
+            {
+                //case when duplicate name is entered
+                cout<<"Entry with given name already exits"<<endl;
+                delete entry;
+                return e;
+            }
             else
             {
+                //propagation to left side of the tree
                 if(temp->left==NULL)
                 {
                     temp->left=entry;
+                    cout<<"*** Inserted Successfully *****"<<endl;
                     return e; 
                 }
                 else temp=temp->left;
@@ -78,9 +105,12 @@ Root insert_a(Root e,int age,string name,string gender,string dept)
 }
 bool search_c(Root e,string name)
 {
+    //returns TRUE if there exist a data entry with given name
+    //else returns FALSE
     Node *temp=e.start;
     if(temp==NULL)
     {
+        cout<<"Empty tree try to insert some data"<<endl;
         return 0;
     }
     else
@@ -89,28 +119,38 @@ bool search_c(Root e,string name)
         {
             if(name>temp->name)
             {
-                if(temp->right==NULL) return 0;
+                if(temp->right==NULL) break;
                 else temp=temp->right;
             }
-            else if(name==temp->name) return 1;
+            else if(name==temp->name)
+            {
+                cout<<"*** Requested details ***"<<endl;
+                cout<<"Name           :"<<temp->name<<endl;
+                cout<<"Age            :"<<temp->age<<endl;
+                cout<<"Gender         :"<<temp->gender<<endl;
+                cout<<"Department     :"<<temp->dept<<endl;
+                cout<<"***********************"<<endl;
+                return true;
+            } 
             else
             {
-                if(temp->left==NULL) return 0;
+                if(temp->left==NULL) break;
                 else temp=temp->left;
             }
         }
+        cout<<"*** Not found ****"<<endl;
         return 0;
     }
 }
 Root deleter(Node *req,Root e,Node *prev,int dir)
 {
-    //1 for right
-    //-1 for left
+    //function to delete node "req"
     if(req->left==NULL&&req->right!=NULL)
     {
         if(dir==1) prev->right=req->right;
         else prev->left=req->right;
-        free(req);
+        cout<<"*** Deleted successfully ***"<<endl;
+        delete req;
     }
     else if(req->right==NULL&&req->left!=NULL)
     {
@@ -121,7 +161,8 @@ Root deleter(Node *req,Root e,Node *prev,int dir)
     {
         if(dir==1) prev->right=NULL;
         else prev->left=NULL;
-        free(req);
+        cout<<"*** Deleted successfully ***"<<endl;
+        delete req;
     }
     else
     {
@@ -136,15 +177,25 @@ Root deleter(Node *req,Root e,Node *prev,int dir)
 }
 Root delete_b(Root e,string name)
 {
+    //this function seperates the cases and calls the function deleter
+    //appropiately and return Root after deletion
     Node *prev;
     int dir=0;
     Node *temp=e.start;
-    if(temp==NULL) return e;
+    if(temp==NULL) 
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+        return e;
+    }
     while (temp!=NULL)
     {
         if(name>temp->name)
         {
-            if(temp->right==NULL) return e;
+            if(temp->right==NULL)
+            {
+                cout<<"Empty tree try to insert some data"<<endl;
+                return e;
+            } 
             else
             {
                 prev=temp;
@@ -158,7 +209,11 @@ Root delete_b(Root e,string name)
         }
         else
         {
-            if(temp->left==NULL) return e;
+            if(temp->left==NULL)
+            {
+                cout<<"Empty tree try to insert some data"<<endl;
+                return e;
+            } 
             else 
             {
                 prev=temp;
@@ -185,8 +240,18 @@ int main()
     r=insert_a(r,11,"abcdefgh","M","CSE");
     r=insert_a(r,9,"abcdefg","M","CSE");
     r=insert_a(r,8,"abcdefghij","M","CSE");
-    r=delete_b(r,"a");
-    printer(r.start);
+    delete_b(r,"a");
+    delete_b(r,"ab");
+    delete_b(r,"abc");
+    delete_b(r,"abcd");
+    delete_b(r,"abcde");
+    delete_b(r,"abcdef");
+    delete_b(r,"abcdefg");
+    delete_b(r,"abcdefgh");
+    delete_b(r,"abcdefghi");
+    // delete_b(r,"abcdefghij");
+    // delete_b(r,"abcdefghijkl");
+    inOrder(r.start);
     free_mem(r.start);
     return 0;
 }
