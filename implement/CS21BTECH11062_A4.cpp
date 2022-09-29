@@ -187,6 +187,7 @@ Node * dell(Node *temp,Node *parent,Node *start,int dir)
         }
         if(dir==1) parent->right=temp->left;
         else parent->left=temp->left;
+        delete (temp);
     }
     else if(temp->left==NULL)
     {
@@ -198,6 +199,7 @@ Node * dell(Node *temp,Node *parent,Node *start,int dir)
         }
         if(dir==1)parent->right=temp->right;
         else parent->left=temp->right;
+        delete (temp);
     }
     else
     {
@@ -264,8 +266,11 @@ int main()
     r=insert_a(r,12,"abcdefghijkl","M","CSE");
     r=insert_a(r,8,"abcdefghijklmn","M","CSE");
     r=insert_a(r,8,"a","M","CSE");
-    search_c(r,"a");
+    // search_c(r,"a");
     r.start=delete_b(r.start,"abcdefghi");
+    r.start=delete_b(r.start,"abcdefghijkl");
+    r.start=delete_b(r.start,"a");
+    r.start=delete_b(r.start,"abcdefghijklmn");
     inOrder(r.start);
     free_mem(r);
     return 0;
