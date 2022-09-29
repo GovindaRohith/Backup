@@ -1,4 +1,9 @@
-//TBST 
+/*
+* Code by
+* Govinda Rohith Y
+* CS21BTECH11062
+* implemenation of Threaded binary search tree
+*/
 //1.  Each node contains the Age, Name, Gender, and
 // Department of a faculty.
 // Assume the Name is unique
@@ -12,6 +17,7 @@
 using namespace std;
 class Node 
 {
+    //Class to store each node of the tree
     public :
     int age;
     unsigned short int pos;
@@ -20,19 +26,40 @@ class Node
 };
 class Root
 {
+    //class to store the root node of the tree
     public :
     Node *start;
 };
 Node * left_search(Node *temp)
 {
+    //function to return the inorder successor
     while(temp->pos!=00&&temp->pos!=01)
     {
         temp=temp->left;
     }
     return temp;
 }
+void free_mem(Root r)
+{
+    //function to free allocated memory
+    Node *temp=left_search(r.start),*temp2;
+    while(temp!=NULL)
+    {
+        temp2=temp;
+        if(temp->pos==01||temp->pos==11)
+        {
+            temp=left_search(temp->right);
+        }
+        else 
+        {
+            temp=temp->right;
+        }
+        delete temp2;
+    }
+}
 void print_func(Root r)
 {
+    //Inorder traversal of the tree
     Node *temp=left_search(r.start);
     while(temp!=NULL)
     {
@@ -54,6 +81,7 @@ void print_func(Root r)
 }
 void verify(Node *temp)
 {
+    //to be deleted
     if(temp->pos!=00&&temp->pos!=01) verify(temp->left);
     cout<<"***********************"<<endl;
     cout<<"Name           :"<<temp->name<<endl;
@@ -65,8 +93,10 @@ void verify(Node *temp)
 }
 Root deleter(Root r,Node *temp)
 {
+    cout<<"*** Deleted Successfully ***"<<endl;
     Node *parent;
     int isleft;
+    //function deletes the given node and returns root
     //1 -> left child
     //0 ->right child
     //if  left node 
@@ -118,7 +148,7 @@ Root deleter(Root r,Node *temp)
         if(parent->pos==01) parent->pos=00;
         
     }
-    free(temp);
+    delete temp;
     return r;
 }
 Node * opt(Node *temp)
@@ -161,7 +191,7 @@ Root delete_b(Root r,string name)
         }
         else
         {
-            printf("Element not found!");
+           cout<<"Entry not found with given name"<<endl;;
             break;
         }
     }
@@ -169,6 +199,7 @@ Root delete_b(Root r,string name)
 }
 Root insert(Root r,int n,int age,string name,string gender,string dept)
 {
+    //function which inserts and returns the root 
     Node *entry=new Node();
     entry->age=age;
     entry->name=name;
@@ -186,10 +217,14 @@ Root insert(Root r,int n,int age,string name,string gender,string dept)
     else
     {
         Node *temp=r.start;
-        //parent pos change
         while(temp!=NULL)
         {
-            //propagation steps
+            if(temp->name==name)
+            {
+                cout<<"Entry with given name already exsits"<<endl;
+                delete entry;
+                return r;
+            }
             if(name>temp->name&&(temp->pos==11||temp->pos==01)) temp=temp->right;
             else if(name>temp->name&&(temp->pos==00||temp->pos==10))
             {
@@ -207,11 +242,9 @@ Root insert(Root r,int n,int age,string name,string gender,string dept)
                 }
                 break;
             }
-            //propagation steps
             else if(name<temp->name&&(temp->pos==11||temp->pos==10)) temp=temp->left;
             else 
             {
-                //n<temp->item &&(temp->pos==01||temp->pos==00)
                 if(temp->pos==01) 
                 {
                     entry->left=temp->left;
@@ -228,14 +261,28 @@ Root insert(Root r,int n,int age,string name,string gender,string dept)
             }
         }
     }
+    cout<<"*** Inserted Successfully ***"<<endl;
     return r;
 }
-void free_mem(Root r)
+bool search_c(Root r,string name)
 {
-    Node *temp=left_search(r.start),*temp2;
+    Node *temp=left_search(r.start);
+    if(temp==NULL)
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+    }
     while(temp!=NULL)
     {
-        temp2=temp;
+        if(temp->name==name)
+        {
+            cout<<"***** Requested details *****"<<endl;
+            cout<<"Name           :"<<temp->name<<endl;
+            cout<<"Age            :"<<temp->age<<endl;
+            cout<<"Gender         :"<<temp->gender<<endl;
+            cout<<"Department     :"<<temp->dept<<endl;
+            cout<<"****************************"<<endl;
+            return true;
+        }
         if(temp->pos==01||temp->pos==11)
         {
             temp=left_search(temp->right);
@@ -244,9 +291,9 @@ void free_mem(Root r)
         {
             temp=temp->right;
         }
-        free(temp2);
     }
-
+    cout<<"Entry not found with given name"<<endl;
+    return false;
 }
 int main()
 {
@@ -254,6 +301,7 @@ int main()
     //1 2 3 4 5 6 7 8 9 10 11 12 13 14
     Root r;
     r.start=NULL;
+    //insert(Root r,int n,int age,string name,string gender,string dept)
     r=insert(r,6,18,"f","M","A");
     r=insert(r,5,18,"e","M","A");
     r=insert(r,2,18,"b","M","A");
@@ -265,11 +313,22 @@ int main()
     r=insert(r,7,18,"g","M","A");
     r=insert(r,8,18,"h","M","A");
     r=insert(r,12,18,"l","M","A");
-    print_func(r);
-    printf("After del \n");
+    r=insert(r,12,18,"d","M","A");
+    search_c(r,"a");
+    cout<<"After delete "<<endl;
     // check for 6,5
     r=delete_b(r,"f");
+    r=delete_b(r,"e");
+    r=delete_b(r,"b");
+    r=delete_b(r,"c");
+    r=delete_b(r,"j");
+    r=delete_b(r,"a");
+    r=delete_b(r,"i");
+    r=delete_b(r,"k");
+    r=delete_b(r,"g");
+    r=delete_b(r,"h");
     r=delete_b(r,"l");
+    r=delete_b(r,"d");
     print_func(r); 
     printf("\n");
     free_mem(r);
