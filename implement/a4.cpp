@@ -15,6 +15,7 @@ Implmentation of Binary search tree
 using namespace std;
 class Node 
 {
+    //Class to store data from each node of the tree
     public :
     int age;
     string name,gender,dept;
@@ -22,6 +23,7 @@ class Node
 };
 class Root
 {
+    //Class to store root node of the tree
     public :
     Node *start;
 };
@@ -39,15 +41,21 @@ void inOrder_rec(Node *temp)
 }
 void inOrder(Node *temp)
 {
+    //Evaluates if the tree is empty
     if(temp==NULL) cout<<"Empty tree try to insert some data"<<endl;
     else inOrder_rec(temp);
 }
-void free_mem(Node *temp)
+void free_mem_in(Node *temp)
 {
-    //frees allocated memory
-    if(temp->left!=NULL) free_mem(temp->left);
-    if(temp->right!=NULL) free_mem(temp->right);
+    //frees allocated memory using recursion
+    if(temp->left!=NULL) free_mem_in(temp->left);
+    if(temp->right!=NULL) free_mem_in(temp->right);
     delete temp;
+}
+void free_mem(Root r)
+{
+    //Evaluates if the tree is empty
+    if(r.start!=NULL) free_mem_in(r.start);
 }
 Root insert_a(Root e,int age,string name,string gender,string dept)
 {
@@ -124,6 +132,7 @@ bool search_c(Root e,string name)
             }
             else if(name==temp->name)
             {
+                //Prints when node is found
                 cout<<"*** Requested details ***"<<endl;
                 cout<<"Name           :"<<temp->name<<endl;
                 cout<<"Age            :"<<temp->age<<endl;
@@ -142,116 +151,122 @@ bool search_c(Root e,string name)
         return 0;
     }
 }
-Root deleter(Node *req,Root e,Node *prev,int dir)
+Node *inSucc(Node *temp)
 {
-    //function to delete node "req"
-    if(req->left==NULL&&req->right!=NULL)
+    //Returns in order successor for a given node
+    temp=temp->right;
+    while(temp!=NULL)
     {
-        if(dir==1) prev->right=req->right;
-        else prev->left=req->right;
-        cout<<"*** Deleted successfully ***"<<endl;
-        delete req;
+        if(temp->left!=NULL) temp=temp->left;
+        else break;
     }
-    else if(req->right==NULL&&req->left!=NULL)
+    return temp;
+}
+Node * dell(Node *temp,Node *parent,Node *start,int dir)
+{
+    if(temp->right==NULL&&temp->left==NULL)
     {
-        if(dir==1) prev->right=req->left;
-        else prev->left=req->left;
+        if(temp==start)
+        {
+            delete (temp);
+            return NULL;
+        }
+        if(dir==1)parent->right=NULL;
+        else parent->left=NULL;
+        delete (temp);
+        return start;
     }
-    else if(req->right==NULL&&req->right==NULL)
+    else if(temp->right==NULL)
     {
-        if(dir==1) prev->right=NULL;
-        else prev->left=NULL;
-        cout<<"*** Deleted successfully ***"<<endl;
-        delete req;
+        //dir -->1 denotes right side
+        if(parent==NULL)
+        {
+            Node *temp2=temp->left;
+            delete (temp);
+            return temp2;
+        }
+        if(dir==1) parent->right=temp->left;
+        else parent->left=temp->left;
+    }
+    else if(temp->left==NULL)
+    {
+        if(parent==NULL)
+        {
+            Node *temp2=temp->right;
+            delete (temp);
+            return temp2;
+        }
+        if(dir==1)parent->right=temp->right;
+        else parent->left=temp->right;
     }
     else
     {
-        // name ,age ,gender,dept
-        req->name=req->right->name;
-        req->age=req->right->age;
-        req->gender=req->right->gender;
-        req->dept=req->right->dept;
-        return deleter(req->right,e,req,1);
+        parent=inSucc(temp);
+        //parent is inorder successor
+        temp->age=parent->age;
+        temp->dept=parent->dept;
+        temp->gender=parent->gender;
+        temp->name=parent->name;
+        if(temp->right==parent)dir=1;
+        else dir=0;
+        return dell(parent,temp,start,dir);
     }
-    return e;
+    return start;
 }
-Root delete_b(Root e,string name)
+Node * delete_b(Node *start,string name)
 {
-    //this function seperates the cases and calls the function deleter
-    //appropiately and return Root after deletion
-    Node *prev;
-    int dir=0;
-    Node *temp=e.start;
-    if(temp==NULL) 
+    //Deletes the node accordingly and returns root node
+    Node *temp=start,*parent=NULL;
+    int dir=1;
+    if(temp==NULL)
     {
-        cout<<"Empty tree try to insert some data"<<endl;
-        return e;
+        cout<<"Empty Tree insert some data"<<endl;
+        return start;
     }
-    while (temp!=NULL)
+    while(temp!=NULL)
     {
         if(name>temp->name)
         {
+            parent=temp;
+            dir=1;
             if(temp->right==NULL)
             {
-                cout<<"Empty tree try to insert some data"<<endl;
-                return e;
-            } 
-            else
-            {
-                prev=temp;
-                temp=temp->right;
-            } 
-            dir=1;
+                cout<<"Entry not found"<<endl;
+                break;
+            }
+            else temp=temp->right;
         }
         else if(name==temp->name)
         {
-            return deleter(temp,e,prev,dir);
+            cout<<"*** Deleted Successfully ***"<<endl;
+            return  dell(temp,parent,start,dir);
+            break;
         }
         else
         {
+            dir=0;
+            parent=temp;
             if(temp->left==NULL)
             {
-                cout<<"Empty tree try to insert some data"<<endl;
-                return e;
-            } 
-            else 
-            {
-                prev=temp;
-                temp=temp->left;
+                cout<<"Entry not found"<<endl;
+                break;
             }
-            dir=-1;
+            else temp=temp->left;
         }
     }
-    return e;
+    return start;
 }
-
 int main()
 {
     Root r;
     r.start=NULL;
     r=insert_a(r,7,"abcdefghi","M","CSE");
     r=insert_a(r,12,"abcdefghijkl","M","CSE");
-    r=insert_a(r,6,"a","M","CSE");
-    r=insert_a(r,1,"abcdef","M","CSE");
-    r=insert_a(r,2,"abc","M","CSE");
-    r=insert_a(r,5,"ab","M","CSE");
-    r=insert_a(r,10,"abcde","M","CSE");
-    r=insert_a(r,3,"abcd","M","CSE");
-    r=insert_a(r,11,"abcdefgh","M","CSE");
-    r=insert_a(r,9,"abcdefg","M","CSE");
-    r=insert_a(r,8,"abcdefghij","M","CSE");
-    delete_b(r,"a");
-    delete_b(r,"ab");
-    delete_b(r,"abc");
-    delete_b(r,"abcd");
-    delete_b(r,"abcde");
-    delete_b(r,"abcdef");
-    delete_b(r,"abcdefg");
-    delete_b(r,"abcdefgh");
-    delete_b(r,"abcdefghi");
-    // delete_b(r,"abcdefghij");
-    // delete_b(r,"abcdefghijkl");
+    r=insert_a(r,8,"abcdefghijklmn","M","CSE");
+    r=insert_a(r,8,"a","M","CSE");
+    search_c(r,"a");
+    r.start=delete_b(r.start,"abcdefghi");
     inOrder(r.start);
-    free_mem(r.start);
+    free_mem(r);
     return 0;
 }

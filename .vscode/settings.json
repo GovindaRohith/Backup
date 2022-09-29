@@ -36,6 +36,7 @@
     "initializer_list": "cpp",
     "utility": "cpp",
     "typeinfo": "cpp",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "new": "cpp"
   }
 }
