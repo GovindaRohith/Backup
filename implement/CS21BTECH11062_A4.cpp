@@ -154,12 +154,7 @@ bool search_c(Root e,string name)
 Node *inSucc(Node *temp)
 {
     //Returns in order successor for a given node
-    temp=temp->right;
-    while(temp!=NULL)
-    {
-        if(temp->left!=NULL) temp=temp->left;
-        else break;
-    }
+    
     return temp;
 }
 Node * dell(Node *temp,Node *parent,Node *start,int dir)
@@ -203,15 +198,25 @@ Node * dell(Node *temp,Node *parent,Node *start,int dir)
     }
     else
     {
-        parent=inSucc(temp);
+        parent=temp;
+        Node *succ,*temp2=temp;
+        temp=temp->right;
+        while(temp!=NULL&&temp->left!=NULL)
+        {
+            parent=temp;
+            if(temp->left!=NULL) temp=temp->left;
+            else break;
+        }
+        succ=temp;
         //parent is inorder successor
-        temp->age=parent->age;
-        temp->dept=parent->dept;
-        temp->gender=parent->gender;
-        temp->name=parent->name;
-        if(temp->right==parent)dir=1;
+        temp2->age=succ->age;
+        temp2->dept=succ->dept;
+        temp2->gender=succ->gender;
+        temp2->name=succ->name;
+        if(succ==parent->right)dir=1;
         else dir=0;
-        return dell(parent,temp,start,dir);
+        //parent is inorder succ
+        return dell(succ,parent,start,dir);
     }
     return start;
 }
@@ -262,15 +267,31 @@ int main()
 {
     Root r;
     r.start=NULL;
-    r=insert_a(r,7,"abcdefghi","M","CSE");
-    r=insert_a(r,12,"abcdefghijkl","M","CSE");
-    r=insert_a(r,8,"abcdefghijklmn","M","CSE");
-    r=insert_a(r,8,"a","M","CSE");
+    r=insert_a(r,18,"f","M","A");
+    r=insert_a(r,18,"e","M","A");
+    r=insert_a(r,18,"b","M","A");
+    r=insert_a(r,18,"c","M","A");
+    r=insert_a(r,18,"j","M","A");
+    r=insert_a(r,18,"a","M","A");
+    r=insert_a(r,18,"i","M","A");
+    r=insert_a(r,18,"k","M","A");
+    r=insert_a(r,18,"g","M","A");
+    r=insert_a(r,18,"h","M","A");
+    r=insert_a(r,18,"l","M","A");
+    r=insert_a(r,18,"d","M","A");
     // search_c(r,"a");
-    r.start=delete_b(r.start,"abcdefghi");
-    r.start=delete_b(r.start,"abcdefghijkl");
+    r.start=delete_b(r.start,"f");
+    r.start=delete_b(r.start,"e");
+    r.start=delete_b(r.start,"b");
+    r.start=delete_b(r.start,"c");
+    r.start=delete_b(r.start,"j");
     r.start=delete_b(r.start,"a");
-    r.start=delete_b(r.start,"abcdefghijklmn");
+    r.start=delete_b(r.start,"i");
+    r.start=delete_b(r.start,"k");
+    r.start=delete_b(r.start,"g");
+    r.start=delete_b(r.start,"h");
+    r.start=delete_b(r.start,"l");
+    r.start=delete_b(r.start,"d");
     inOrder(r.start);
     free_mem(r);
     return 0;
