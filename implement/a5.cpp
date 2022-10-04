@@ -42,19 +42,23 @@ Node * left_search(Node *temp)
 void free_mem(Root r)
 {
     //function to free allocated memory
-    Node *temp=left_search(r.start),*temp2;
-    while(temp!=NULL)
+    if(r.start==NULL) cout<<"Empty Tree insert some data"<<endl;
+    else
     {
-        temp2=temp;
-        if(temp->pos==01||temp->pos==11)
+        Node *temp=left_search(r.start),*temp2;
+        while(temp!=NULL)
         {
-            temp=left_search(temp->right);
+            temp2=temp;
+            if(temp->pos==01||temp->pos==11)
+            {
+                temp=left_search(temp->right);
+            }
+            else 
+            {
+                temp=temp->right;
+            }
+            delete temp2;
         }
-        else 
-        {
-            temp=temp->right;
-        }
-        delete temp2;
     }
 }
 void print_func(Root r)
@@ -91,11 +95,40 @@ void verify(Node *temp)
     cout<<"***********************"<<endl;
     if(temp->pos!=00&&temp->pos!=10) verify(temp->right);
 }
+Node * opt(Node *temp)
+{
+    //finds inorder successfor(inSucc(temp)) for a given node temp and swaps 
+    //the data among temp and inSucc(temp) return inSucc(temp)
+    Node *temp2;
+    while(temp->pos!=00)
+    {
+        if(temp->pos==01||temp->pos==11)
+        {
+            temp2=left_search(temp->right);
+            temp->age=temp2->age;
+            temp->dept=temp2->dept;
+            temp->gender=temp2->gender;
+            temp->age=temp2->age;
+            temp->name=temp2->name;
+            temp=temp2;
+        }
+        else 
+        {
+            temp->age=temp->right->age;
+            temp->dept=temp->right->dept;
+            temp->gender=temp->right->gender;
+            temp->age=temp->right->age;
+            temp->name=temp->right->name;
+            temp=temp->right;
+        }
+    }
+    return temp;
+}
 Root deleter(Root r,Node *temp)
 {
     cout<<"*** Deleted Successfully ***"<<endl;
     Node *parent;
-    int isleft;
+    bool isleft;
     //function deletes the given node and returns root
     //1 -> left child
     //0 ->right child
@@ -124,6 +157,7 @@ Root deleter(Root r,Node *temp)
     } 
     else
     {
+        //is left tells if it's left child or not 
         if(temp->right->left==temp)
         {
             isleft=1;
@@ -146,29 +180,9 @@ Root deleter(Root r,Node *temp)
         parent->right=temp->right;
         if(parent->pos==11) parent->pos=10;
         if(parent->pos==01) parent->pos=00;
-        
     }
     delete temp;
     return r;
-}
-Node * opt(Node *temp)
-{
-    Node *temp2;
-    while(temp->pos!=00)
-    {
-        if(temp->pos==01||temp->pos==11)
-        {
-            temp2=left_search(temp->right);
-            temp->name=temp2->name;
-            temp=temp2;
-        }
-        else 
-        {
-            temp->name=temp->right->name;
-            temp=temp->right;
-        }
-    }
-    return temp;
 }
 Root delete_b(Root r,string name)
 {
@@ -192,7 +206,7 @@ Root delete_b(Root r,string name)
         else
         {
            cout<<"Entry not found with given name"<<endl;;
-            break;
+           break;
         }
     }
     return r;
@@ -208,12 +222,7 @@ Root insert(Root r,int n,int age,string name,string gender,string dept)
     entry->left=NULL;
     entry->right=NULL;
     entry->pos=00;
-    if(r.start==NULL)
-    {
-        entry->right=NULL;
-        entry->left=NULL;
-        r.start=entry;
-    }
+    if(r.start==NULL) r.start=entry;
     else
     {
         Node *temp=r.start;
@@ -304,31 +313,33 @@ int main()
     //insert(Root r,int n,int age,string name,string gender,string dept)
     r=insert(r,6,18,"f","M","A");
     r=insert(r,5,18,"e","M","A");
-    r=insert(r,2,18,"b","M","A");
-    r=insert(r,3,18,"c","M","A");
+    // r=insert(r,2,18,"b","M","A");
+    // r=insert(r,3,18,"c","M","A");
     r=insert(r,10,18,"j","M","A");
-    r=insert(r,1,18,"a","M","A");
-    r=insert(r,9,18,"i","M","A");
-    r=insert(r,11,18,"k","M","A");
-    r=insert(r,7,18,"g","M","A");
-    r=insert(r,8,18,"h","M","A");
-    r=insert(r,12,18,"l","M","A");
-    r=insert(r,12,18,"d","M","A");
-    search_c(r,"a");
+    // r=insert(r,1,18,"a","M","A");
+    // r=insert(r,9,18,"i","M","A");//
+    // r=insert(r,11,18,"k","M","A");
+    //    f
+    //   / \
+    //  e   j   
     cout<<"After delete "<<endl;
-    // check for 6,5
-    r=delete_b(r,"f");
-    r=delete_b(r,"e");
-    r=delete_b(r,"b");
-    r=delete_b(r,"c");
-    r=delete_b(r,"j");
-    r=delete_b(r,"a");
-    r=delete_b(r,"i");
-    r=delete_b(r,"k");
-    r=delete_b(r,"g");
-    r=delete_b(r,"h");
-    r=delete_b(r,"l");
-    r=delete_b(r,"d");
+    // r=delete_b(r,"j");
+    // r=delete_b(r,"f");
+    // r=delete_b(r,"g");
+    // r=delete_b(r,"h");
+    cout<<r.start->right->left->name<<" adaddad"<<endl;
+    // r=delete_b(r,"e");
+    // r=delete_b(r,"b");
+    // r=delete_b(r,"c");
+    // r=delete_b(r,"j");
+    // r=delete_b(r,"a");
+    //bug here
+    // r=delete_b(r,"i");
+    // r=delete_b(r,"g");
+    // r=delete_b(r,"k");
+    // r=delete_b(r,"h");
+    // r=delete_b(r,"l");
+    // r=delete_b(r,"d");
     print_func(r); 
     printf("\n");
     free_mem(r);
