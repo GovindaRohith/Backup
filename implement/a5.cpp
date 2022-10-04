@@ -42,8 +42,7 @@ Node * left_search(Node *temp)
 void free_mem(Root r)
 {
     //function to free allocated memory
-    if(r.start==NULL) cout<<"Empty Tree insert some data"<<endl;
-    else
+    if(r.start!=NULL)
     {
         Node *temp=left_search(r.start),*temp2;
         while(temp!=NULL)
@@ -64,23 +63,28 @@ void free_mem(Root r)
 void print_func(Root r)
 {
     //Inorder traversal of the tree
-    Node *temp=left_search(r.start);
-    while(temp!=NULL)
+    if(r.start==NULL) cout<<"Empty tree try to insert some data"<<endl;
+    else
     {
-        cout<<"***********************"<<endl;
-        cout<<"Name           :"<<temp->name<<endl;
-        cout<<"Age            :"<<temp->age<<endl;
-        cout<<"Gender         :"<<temp->gender<<endl;
-        cout<<"Department     :"<<temp->dept<<endl;
-        cout<<"***********************"<<endl;
-        if(temp->pos==01||temp->pos==11)
+        Node *temp=left_search(r.start);
+        while(temp!=NULL)
         {
-            temp=left_search(temp->right);
+            cout<<"***********************"<<endl;
+            cout<<"Name           :"<<temp->name<<endl;
+            cout<<"Age            :"<<temp->age<<endl;
+            cout<<"Gender         :"<<temp->gender<<endl;
+            cout<<"Department     :"<<temp->dept<<endl;
+            cout<<"***********************"<<endl;
+            if(temp->pos==01||temp->pos==11)
+            {
+                temp=left_search(temp->right);
+            }
+            else 
+            {
+                temp=temp->right;
+            }
         }
-        else 
-        {
-            temp=temp->right;
-        }
+        cout<<endl;
     }
 }
 void verify(Node *temp)
@@ -274,8 +278,9 @@ Root delete_b(Root r,string name)
     Node *temp=r.start;
     if(temp->pos==00&&temp->name==name)
     {
-        r.start=NULL;
+        cout<<"*** Deleted Successfully ***"<<endl;
         delete temp;
+        r.start=NULL;
         return r;
     }
     if(r.start==NULL) cout<<"Empty list try to insert some data"<<endl;
@@ -305,16 +310,15 @@ Root delete_b(Root r,string name)
 }
 int main()
 {
-    //a b c d e f g h i j  k  l  m  n  o  p  q  r 
-    //1 2 3 4 5 6 7 8 9 10 11 12 13 14
     Root r;
     r.start=NULL;
-    //insert(Root r,int n,int age,string name,string gender,string dept)
     r=insert_a(r,18,"l","M","A");
+    r=insert_a(r,18,"h","M","A");
+    r=insert_a(r,18,"d","M","A");
     r=delete_b(r,"l");
-    //deletion of only root case check
+    r=delete_b(r,"d");
+    r=delete_b(r,"h");
     print_func(r); 
-    printf("\n");
     free_mem(r);
     return 0;
 }
