@@ -32,7 +32,7 @@ class Root
 };
 Node * left_search(Node *temp)
 {
-    //function to return the inorder successor
+    //function to return the inorder successor of *temp
     while(temp->pos!=00&&temp->pos!=01)
     {
         temp=temp->left;
@@ -87,18 +87,6 @@ void print_func(Root r)
         cout<<endl;
     }
 }
-void verify(Node *temp)
-{
-    //to be deleted
-    if(temp->pos!=00&&temp->pos!=01) verify(temp->left);
-    cout<<"***********************"<<endl;
-    cout<<"Name           :"<<temp->name<<endl;
-    cout<<"Age            :"<<temp->age<<endl;
-    cout<<"Gender         :"<<temp->gender<<endl;
-    cout<<"Department     :"<<temp->dept<<endl;
-    cout<<"***********************"<<endl;
-    if(temp->pos!=00&&temp->pos!=10) verify(temp->right);
-}
 Root insert_a(Root r,int age,string name,string gender,string dept)
 {
     //function which inserts and returns the root 
@@ -149,6 +137,7 @@ Root insert_a(Root r,int age,string name,string gender,string dept)
 }
 bool search_c(Root r,string name)
 {
+    //function returns true if node is present with given "name"
     Node *temp=left_search(r.start);
     if(temp==NULL)
     {
@@ -181,8 +170,8 @@ bool search_c(Root r,string name)
 
 Node * opt(Node *temp)
 {
-    //finds inorder successfor(inSucc(temp)) for a given node temp and swaps 
-    //the data among temp and inSucc(temp) return inSucc(temp)
+    //swaps given node (temp) data with its inorder Suc untill
+    //it returns deletion of a leaf node case
     Node *temp2;
     while(temp->pos!=00)
     {
@@ -209,21 +198,10 @@ Node * opt(Node *temp)
 }
 Root deleter(Root r,Node *temp)
 {
-    //only leaf nodes come to this func
+    //function for deletion of a LEAF node and returns Root 
     cout<<"*** Deleted Successfully ***"<<endl;
     Node *parent;
     bool isleft;
-    //function deletes the given node and returns root
-    //1 -> left child
-    //0 ->right child
-    //if  left node 
-    //    temp->left ||->left  !=temp  --> parent=temp->right
-    //    temp->left ||->right !=temp  -->
-    //   temp->right->left ==temp   ->left node
-    //right node 
-    //    temp->right ||->left !=temp   --> 
-    //    temp->right ||->right !=temp  -->parent=temp->left
-    //   temp->left->right ==temp   -->right node
     if(temp->left==NULL||temp->right==NULL)
     {
         if(temp->left==NULL)
@@ -275,9 +253,11 @@ Root deleter(Root r,Node *temp)
 }
 Root delete_b(Root r,string name)
 {
+    //function to delete node with given name
     Node *temp=r.start;
     if(temp->pos==00&&temp->name==name)
     {
+        //deletion of ONLY root node
         cout<<"*** Deleted Successfully ***"<<endl;
         delete temp;
         r.start=NULL;
@@ -315,6 +295,7 @@ int main()
     r=insert_a(r,18,"l","M","A");
     r=insert_a(r,18,"h","M","A");
     r=insert_a(r,18,"d","M","A");
+    search_c(r,"l");
     r=delete_b(r,"l");
     r=delete_b(r,"d");
     r=delete_b(r,"h");
