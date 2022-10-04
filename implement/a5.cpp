@@ -237,6 +237,7 @@ Root insert(Root r,int n,int age,string name,string gender,string dept)
             if(name>temp->name&&(temp->pos==11||temp->pos==01)) temp=temp->right;
             else if(name>temp->name&&(temp->pos==00||temp->pos==10))
             {
+                cout<<name<<"  adad  "<<temp->name<<endl;
                 entry->right=temp->right;
                 temp->right=entry;
                 if(temp->pos==00)
