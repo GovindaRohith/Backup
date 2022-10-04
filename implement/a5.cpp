@@ -131,9 +131,9 @@ Root insert_a(Root r,int age,string name,string gender,string dept)
             else if(name<temp->name&&(temp->pos==11||temp->pos==10)) temp=temp->left;
             else 
             {
+                entry->left=temp->left;
                 temp->left=entry;
                 entry->right=temp;
-                entry->left=temp->left;
                 if(temp->pos==01)  temp->pos=11;
                 else  temp->pos=10;
                 break;
@@ -220,17 +220,18 @@ Root deleter(Root r,Node *temp)
     //    temp->right ||->left !=temp   --> 
     //    temp->right ||->right !=temp  -->parent=temp->left
     //   temp->left->right ==temp   -->right node
-    cout<<temp->left->name<<endl;
     if(temp->left==NULL||temp->right==NULL)
     {
         if(temp->left==NULL)
         {
+            if(r.start==temp) r.start=temp->right;
             isleft=1;
             parent=temp->right;
             parent->left=temp->left;
         } 
         else
         {
+            if(r.start==temp)r.start=temp->left;
             isleft=0;
             parent=temp->left;
             parent->right=temp->right;
@@ -252,7 +253,6 @@ Root deleter(Root r,Node *temp)
             parent=temp->left;
         } 
     }
-    cout<<parent->left->name<<"asdasddsdas"<<endl;
     if(isleft==1)
     {
         //pos assigner and inOrder assigner
@@ -272,6 +272,13 @@ Root deleter(Root r,Node *temp)
 Root delete_b(Root r,string name)
 {
     Node *temp=r.start;
+    if(temp->pos==00&&temp->name==name)
+    {
+        r.start=NULL;
+        delete temp;
+        return r;
+    }
+    if(r.start==NULL) cout<<"Empty list try to insert some data"<<endl;
     int prev;
     while(1>0)
     {
@@ -303,32 +310,9 @@ int main()
     Root r;
     r.start=NULL;
     //insert(Root r,int n,int age,string name,string gender,string dept)
-    r=insert_a(r,18,"f","M","A");
-    r=insert_a(r,18,"e","M","A");
-    r=insert_a(r,18,"b","M","A");
-    r=insert_a(r,18,"c","M","A");
-    r=insert_a(r,18,"j","M","A");
-    r=insert_a(r,18,"a","M","A");
-    r=insert_a(r,18,"i","M","A");
-    r=insert_a(r,18,"k","M","A");
-    r=insert_a(r,18,"g","M","A");
-    r=insert_a(r,18,"h","M","A");
     r=insert_a(r,18,"l","M","A");
-    r=insert_a(r,18,"d","M","A");
-    // search_c(r,"a");
-    r=delete_b(r,"f");
-    cout<<r.start->right->left->left->left->name<<endl;
-    // r=delete_b(r,"e");
-    // r=delete_b(r,"b");
-    // r=delete_b(r,"c");
-    // r=delete_b(r,"j");
-    // r=delete_b(r,"a");
-    // r=delete_b(r,"i"); //bug
-    // r=delete_b(r,"k");
-    // r=delete_b(r,"g");
-    // r=delete_b(r,"h");
-    // r=delete_b(r,"l");
-    // r=delete_b(r,"d");
+    r=delete_b(r,"l");
+    //deletion of only root case check
     print_func(r); 
     printf("\n");
     free_mem(r);
