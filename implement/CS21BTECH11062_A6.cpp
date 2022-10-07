@@ -1,3 +1,10 @@
+/*
+Code by
+Govinda Rohith Y
+CS21BTECH11062
+Assignment-6 
+Implementation of heap
+*/
 // 1.Each node contains the Age of a faculty.
 //Implementation of Heap
 // 2.You should implement
@@ -6,37 +13,43 @@
 // C.Delete Min
 #include<iostream>
 #include<stdlib.h>
-#define INIT 100
+#define INIT 10 //INIT represents (max no of elements+1)
 using namespace std;
 int min(int *arr)
 {
+    //Function to return min value of given heap arr
+    if(arr[0]==0)  //Empty array case
+    {
+        cout<<"Empty array"<<endl;
+        return -1;
+    }
     if(arr!=NULL) return arr[1];
     else return -1;
 }
-
 void printer(int *arr)
 {
+    //Function to print elements in an array
     int i;
-    for(i=1;i<=arr[0];i++)
+    if(arr[0]==0) cout<<"Empty array"<<endl; //Empty array case
+    else
     {
-        cout<<arr[i]<<" ";
+        for(i=1;i<=arr[0];i++)
+        {
+            cout<<arr[i]<<" ";
+        }
+        cout<<endl;
     }
-    cout<<endl;
 }
-//      parent
-//         i
-//   c1           c2
-//   2*i          2*i+1 
-// parent < children
 int * insert(int *arr,int n)
 {
-    // index current size given
+    //Function to insert given age 'n'
     int index=arr[0],temp;
-    if(index+1==99) 
+    if(index==INIT-1) //Case when array is full
     {
-        printf("Array full");
+        cout<<"Array full !!!"<<endl;
         return arr;
     }
+    cout<<"*** Inserted Sucessfully ***"<<endl;
     arr[index+1]=n;
     index++;
     while(index>1)
@@ -53,11 +66,18 @@ int * insert(int *arr,int n)
             break;
         }
     }
-    arr[0]++;
+    arr[0]++; //update size
     return arr;
 }
 int * delete_c(int *arr)
 {
+    //Function to delete min of all ages
+    if(arr[0]==0) //Empty array case
+    {
+        cout<<"Empty array try to insert some elements"<<endl;
+        return arr;
+    }
+    cout<<"*** Deleted Sucessfully ***"<<endl;
     int index=1,temp;
     arr[1]=arr[arr[0]];
     while(index<=arr[0]&&(2*index+1)<=arr[0])//Equailty verify
@@ -81,20 +101,25 @@ int * delete_c(int *arr)
             break;
         }   
     }
-    arr[0]=arr[0]-1;
+    arr[0]=arr[0]-1; //update size
     return arr;
 }
 int main()
 {
-    // arr[0] ==>INIT
     int *arr;
     arr=(int *)malloc(sizeof(int)*INIT);
-    arr[0]=0;
+    if(INIT<=1)
+    {
+        cout<<"Invalid Size !!!!"<<endl;
+    }
+    arr[0]=0;//arr[0] -->keeps track of no of ages(elements) present
     arr=insert(arr,8);
-    arr=insert(arr,23);
+    arr=insert(arr,8);
     arr=insert(arr,48);
     printer(arr);
-    printf("The minimum value of the BHT is %d \n",min(arr));
+    cout<<"The minimum value of the BHT is "<<min(arr)<<endl;
+    arr=delete_c(arr);
+    arr=delete_c(arr);
     arr=delete_c(arr);
     printer(arr);
     free(arr);
