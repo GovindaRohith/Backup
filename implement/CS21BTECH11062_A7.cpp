@@ -1,33 +1,37 @@
+//Code by
+//Govinda Rohith Y
+//CS21BTECH11062
+//Assignment-7
+//Implementation of heap sort
 // 1.Each node contains the Age of a faculty.
 // 2.You should implement take input an array and print sorted one
 #include<iostream>
 #include<stdlib.h>
+#define INIT 3 //INIT represents max no of elements in an array
 using namespace std;
-//         1
-//    2         3
-//  4     5    6      7
-//8   9  A  B C  D  E   F
-//floor of by 2
 void printer(int *arr)
 {
+    //Function to print elements in given array
     if(arr[0]==0) cout<<"Empty array try inserting some data";
     else
     {
         for(int i=1;i<=arr[0];i++)
         {
-            cout<<arr[i]<<"   ";
+            cout<<arr[i]<<" ";
         }
     }
     cout<<endl;
 }
 int * insert(int *arr,int n)
 {
+    //Function to insert given age 'n'
     int index=arr[0],temp;
-    if(index+1==99) 
+    if(index==INIT) //Case when array is full
     {
-        printf("Array full");
+        cout<<"Array full !!!"<<endl;
         return arr;
     }
+    cout<<"*** Inserted Sucessfully ***"<<endl;
     arr[index+1]=n;
     index++;
     while(index>1)
@@ -44,7 +48,7 @@ int * insert(int *arr,int n)
             break;
         }
     }
-    arr[0]++;
+    arr[0]++; //update size
     return arr;
 }
 int * heapify(int *arr)
@@ -90,13 +94,18 @@ int * heapsort(int *arr)
 
 int main()
 {
-    int n=10,i,*arr;
-    arr=(int *)malloc(sizeof(int)*(n+1));
-    arr[0]=0;
-    int temp;
-    arr=insert(arr,6);
-    arr=insert(arr,5);
-    arr=insert(arr,4);
+    int *arr;
+    arr=(int *)malloc(sizeof(int)*(INIT+1));
+    arr[0]=0;//arr[0] -->keeps track of no of ages(elements) present
+    if(INIT<=0) 
+    {
+        cout<<"Invalid size"<<endl;
+        return 0;
+    }
+    arr=insert(arr,1);
+    arr=insert(arr,1);
+    arr=insert(arr,2);
+    arr=heapsort(arr);
     arr=heapsort(arr);
     printer(arr);
     free(arr);
