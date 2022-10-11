@@ -11,7 +11,7 @@
 using namespace std;
 void printer(int *arr)
 {
-    //Function to print elements in given array
+    //Function to print elements in given heap 
     if(arr[0]==0) cout<<"Empty array try inserting some data";
     else
     {
@@ -22,6 +22,7 @@ void printer(int *arr)
     }
     cout<<endl;
 }
+
 int * insert(int *arr,int n)
 {
     //Function to insert given age 'n'
@@ -53,6 +54,7 @@ int * insert(int *arr,int n)
 }
 int * heapify(int *arr)
 {
+    //function to heapify the tree obtained after deleting the min value
     int index=1,temp;
     arr[1]=arr[arr[0]];
     while(index<=arr[0]&&(2*index+1)<=arr[0])//Equailty verify
@@ -81,7 +83,16 @@ int * heapify(int *arr)
 }
 int * heapsort(int *arr)
 {
+    //Heapsort function to sort HEAP ARRAY 'arr'
     int i,size=arr[0],temp=arr[1];
+    for(i=1;i<size;i++) //loop just checks if the array is sorted
+    {
+        if(arr[i]<arr[i+1])
+        {
+            break;
+        }
+    }
+    if(i==size) return arr;
     for(i=1;i<=size;i++)
     {
         temp=arr[1];
@@ -91,7 +102,34 @@ int * heapsort(int *arr)
     arr[0]=size;
     return arr;
 }
-
+int * convert_sort(int *arr)
+{
+    //Function to convert regular array to normal min heap and sort
+    //NOTE array should be only size INIT
+    int i,*arr2;
+    arr2=(int *)malloc(sizeof(int)*(INIT+1));
+    arr2[0]=0;
+    for(i=0;i<INIT;i++)
+    {
+        arr2=insert(arr2,arr[i]);
+    }
+    arr2=heapsort(arr2);
+    for(i=0;i<INIT;i++)
+    {
+        arr[i]=arr2[i+1];
+    }
+    free(arr2);
+    return arr;
+}
+void print_norm(int *arr)
+{
+    //Function to print NORMAL array 'arr' NOT min heap array
+    for(int i=0;i<INIT;i++)
+    {
+        cout<<arr[i]<<" ";
+    }
+    cout<<endl;
+}
 int main()
 {
     int *arr;
@@ -102,10 +140,9 @@ int main()
         cout<<"Invalid size"<<endl;
         return 0;
     }
-    arr=insert(arr,1);
+    arr=insert(arr,5);
     arr=insert(arr,1);
     arr=insert(arr,2);
-    arr=heapsort(arr);
     arr=heapsort(arr);
     printer(arr);
     free(arr);
