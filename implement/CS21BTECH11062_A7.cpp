@@ -9,20 +9,6 @@
 #include<stdlib.h>
 #define INIT 3 //INIT represents max no of elements in an array
 using namespace std;
-void printer(int *arr)
-{
-    //Function to print elements in given heap 
-    if(arr[0]==0) cout<<"Empty array try inserting some data";
-    else
-    {
-        for(int i=1;i<=arr[0];i++)
-        {
-            cout<<arr[i]<<" ";
-        }
-    }
-    cout<<endl;
-}
-
 int * insert(int *arr,int n)
 {
     //Function to insert given age 'n'
@@ -133,18 +119,17 @@ void print_norm(int *arr)
 int main()
 {
     int *arr;
-    arr=(int *)malloc(sizeof(int)*(INIT+1));
-    arr[0]=0;//arr[0] -->keeps track of no of ages(elements) present
+    arr=(int *)malloc(sizeof(int)*(INIT));
     if(INIT<=0) 
     {
         cout<<"Invalid size"<<endl;
         return 0;
     }
-    arr=insert(arr,5);
-    arr=insert(arr,1);
-    arr=insert(arr,2);
-    arr=heapsort(arr);
-    printer(arr);
+    arr[0]=3;
+    arr[1]=4;
+    arr[2]=2;
+    arr=convert_sort(arr);
+    print_norm(arr);
     free(arr);
     return 0;
 }
