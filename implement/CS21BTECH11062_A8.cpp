@@ -1,3 +1,9 @@
+/*
+Code by
+Govinda Rohith Y
+CS21BTECH11062
+CS2233-Assignment-8 (Red-Black Trees)
+*/
 // 1.  Each node contains the Age of a faculty.
 // 
 // 2.  You should implement
@@ -7,43 +13,57 @@
 using namespace std;
 class Node 
 {
+    //Class which represents each node
     public :
-    int item;
-    bool isblack=true;
+    int age;
+    bool isblack=true; //true represents the node is black 
     Node *left,*right,*parent;
 };
 class Root
 {
+    //class to store root of tree
     public :
     Node *start;
 };
 void printer(Node *temp)
 {
     if(temp->left!=NULL) printer(temp->left);
-    if(temp->isblack) cout<<temp->item<<"->"<<"Black color ,";
-    else cout<<temp->item<<"->"<<"Red color ,";
+    if(temp->isblack) cout<<temp->age<<"->"<<"Black color ,";
+    else cout<<temp->age<<"->"<<"Red color ,";
     if(temp->right!=NULL) printer(temp->right);
+}
+void inorder(Root e)
+{
+    //Inorder traversal of tree 
+    if(e.start==NULL) cout<<"Empty tree try to insert some data"<<endl;
+    else printer(e.start);
 }
 void post(Node *temp)
 {
-    if(temp->isblack) cout<<temp->item<<"-> "<<"Black color ,";
-    else cout<<temp->item<<"->"<<"Red color ,";
+    //postorder traversal of tree
+    if(temp->isblack) cout<<temp->age<<"-> "<<"Black color ,";
+    else cout<<temp->age<<"->"<<"Red color ,";
     if(temp->left!=NULL) post(temp->left);
     if(temp->right!=NULL) post(temp->right);
 }
 void free_mem(Node *temp)
 {
+    //function to free allocated memory
     if(temp->left!=NULL) free_mem(temp->left);
     if(temp->right!=NULL) free_mem(temp->right);
     delete temp;
 }
-Root right(Root r,Node *parent,Node *a)
+Root right(Root r,Node *a)
 {
-    //given parent and top node A
+    //Right rotate the tree as written below
     //    A             B
     //  B   C   ->   D      A
     //D  E                E   C
+    Node *parent=a->parent;
     Node *b=a->left;
+    b->parent=a->parent;
+    a->parent=b;
+    if(a->left->right!=NULL) a->left->right->parent=a;
     a->left=b->right;
     b->right=a;
     if(parent!=NULL)
@@ -54,12 +74,17 @@ Root right(Root r,Node *parent,Node *a)
     else r.start=b;
     return r;
 }
-Root left(Root r,Node *parent,Node *x)
+Root left(Root r,Node *x)
 {
+    //Left rotate the tree as written below
     //  x                   y
     //A   y        -->    x   C
     //   B  C           A  B
+    Node *parent=x->parent;
     Node *y=x->right;
+    y->parent=x->parent;
+    x->parent=y;
+    if(x->right->left!=NULL)x->right->left->parent=x; 
     x->right=y->left;
     y->left=x;
     if(parent!=NULL)
@@ -72,6 +97,7 @@ Root left(Root r,Node *parent,Node *x)
 }
 Root color(Root e,Node *temp)
 {
+    //function to color the tree according to the cases
     Node *parent,*uncle,*gp=NULL;
     temp->isblack=false;
     if(temp==e.start)
@@ -80,90 +106,82 @@ Root color(Root e,Node *temp)
         return e;
     }
     if(temp->parent->isblack) return e;
-    //                 ****Inequality check here ******
-    while(temp!=e.start&&temp->parent->isblack == false)
-    {
     parent=temp->parent;
     gp=parent->parent;
     if(gp->left==parent)
     {
+        //case when parent is left child of gp
         uncle=gp->right;
         if(uncle==NULL||uncle->isblack)
         {
-            if(uncle==NULL)
+            //uncle is black
+            if(temp==parent->left)
             {
-                e=right(e,gp->parent,gp);
-                temp=parent;
-                temp->right->isblack=false;
+                e=right(e,gp);
+                parent->isblack=true;
+                gp->isblack=false;
             }
             else
             {
-                if(parent->right==temp)
-                {
-                    e=left(e,gp->parent,gp);
-                    temp=parent;
-                }
-                else    
-                {
-                    e=right(e,gp->parent,gp);
-                    temp=parent;
-                }
+                e=left(e,parent);
+                e=right(e,gp);
+                parent->isblack=false;
+                temp->isblack=true;
+                gp->isblack=false;
             }
         }
         else
         {
+            //uncle is red
             gp->isblack=false;
             parent->isblack=true;
             uncle->isblack=true;
-            temp=gp;
+            return color(e,gp);
         }
     }
     else
     {
+        //case when parent is right child of gp
         uncle=gp->left;
         if(uncle==NULL||uncle->isblack)
         {
-            if(uncle==NULL)
+            //case when uncle is black
+            if(temp==parent->right)
             {
-                // e=right(e,gp->parent,gp);
-                // temp=parent;
-                e=left(e,gp->parent,gp);
-                temp=parent;
-                temp->left->isblack=false;
+                e=left(e,gp);
+                parent->isblack=true;
+                gp->isblack=false;
             }
             else
             {
-                if(parent->right==temp)
-                {
-                    e=right(e,gp->parent,gp);
-                    temp=parent;  
-                }
-                else
-                {
-                    e=left(e,gp->parent,gp);
-                    temp=parent;
-                }
+                e=right(e,parent);
+                e=left(e,gp);
+                temp->isblack=true;
+                gp->isblack=false;
+                parent->isblack=false;
             }
         }
         else
         {
+            //case when uncle is red
             gp->isblack=false;
             parent->isblack=true;
             uncle->isblack=true;
-            temp=gp;
+            return color(e,gp);
         }
-    }
     }
     e.start->isblack=true;
     return e;
 }
 Root insert(Root e,int a)
 {
+    cout<<"**** Inserted Sucessfully ***"<<endl;
+    //function to insert a according to tree property
     Node *temp=e.start;
     Node *entry=new Node();
     entry->left=NULL;
     entry->right=NULL;
-    entry->item=a;
+    entry->age=a;
     if(temp==NULL)
     {
         e.start=entry;
@@ -173,7 +191,7 @@ Root insert(Root e,int a)
     }
     while(temp!=NULL)
     {
-        if(a>temp->item)
+        if(a>temp->age)
         {
             if(temp->right==NULL)
             {
@@ -209,10 +227,10 @@ int main()
     r=insert(r,10);
     r=insert(r,1);
     r=insert(r,9);
-    // r=insert(r,11);
-    // r=insert(r,7);
-    // r=insert(r,8);
-    // r=insert(r,12);
+    r=insert(r,11);
+    r=insert(r,6);
+    r=insert(r,8);
+    r=insert(r,12);
     post(r.start);
     cout<<endl;
     free_mem(r.start);
