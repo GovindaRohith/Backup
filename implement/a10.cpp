@@ -1,13 +1,16 @@
-#include <iostream>
-#include<stdlib.h>
+#include<iostream>
 using namespace std;
+void hello()
+{
+    cout<<"HELLO"<<endl;
+}
+void hello2()
+{
+    cout<<"HELLO2"<<endl;
+}
 int main()
 {
-    int *arr;
-    arr=(int *)malloc(sizeof(int)*2);
-    arr[0]=1;
-    arr[1]=2;
-    if(&arr[2]==NULL) cout<<"YEp"<<endl;
-    free(arr);
+    hello();
+    hello2();
     return 0;
 }

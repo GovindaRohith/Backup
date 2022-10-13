@@ -5,6 +5,7 @@
 // C.Delete 
 // 3.Take the value of n as five
 #include<iostream>
+#include<stdlib.h>
 // #define N 5;
 using namespace std;
 int N=5;
@@ -13,9 +14,9 @@ class Node
     public:
     int no;
     // no of keys in Node
-    int *keys=NULL; //array of keys
-    Node **child=NULL; //array of child nodes
-    Node *parent=NULL; //array of parent NODE
+    int *keys; //array of keys
+    Node **child; //array of child nodes
+    Node *parent; //array of parent NODE
 };  
 class Root
 {
@@ -26,17 +27,41 @@ void act(Node *temp,int age,Node *left,Node *right);
 void printer(Node *temp)
 {
     int i;
+    if(temp!=NULL) //change this condition here due to multiple checks
+    {
     for(i=0;i<temp->no;i++)
     {
         if(temp->child[i]!=NULL)
         {
             printer(temp->child[i]);
         }
-        cout<<temp->keys[i]<<"  ";
+        cout<<temp->keys[i]<<" ";
     }
     if(temp->child[i]!=NULL)
     {
         printer(temp->child[i]);
+    }
+    }
+}
+void free_mem(Node *temp)
+{
+    int i;
+    if(temp!=NULL)
+    {
+    free(temp->keys);
+    for(i=0;i<temp->no;i++)
+    {
+        if(temp->child[i]!=NULL)
+        {
+            free_mem(temp->child[i]);
+        }
+    }
+    if(temp->child[i]!=NULL)
+    {
+        free_mem(temp->child[i]);
+    }
+    free(temp->child);
+    delete temp;
     }
 }
 void ins_spilt(Node *temp)
@@ -118,14 +143,21 @@ Root insert_a(Root r,int age)
     if(temp==NULL)
     {
         Node *entry=new Node();
+        int *arr;
+        arr=(int *)malloc(sizeof(int)*N);
+        Node **child;
+        child=(Node **)malloc(sizeof(Node *)*(N+1));
+        entry->keys=arr;
+        entry->child=child;
         for(i=0;i<N;i++)
         {
             entry->keys[i]=0;
             entry->child[i]=NULL;
         }
-        entry->child[i+1]=NULL;
+        entry->child[i]=NULL;
         entry->keys[0]=age;
         r.start=entry;
+        entry->no=1;
         return r;
     }
     //finds node in which the age should be inserted
@@ -146,7 +178,11 @@ Root insert_a(Root r,int age)
             if(age>=temp->keys[i]&&age<=temp->keys[i+1])
             {
                 if(temp->child[i]!=NULL) temp=temp->child[i];
-                else break;
+                else 
+                {
+                    act(temp,age,NULL,NULL);
+                    return r;  
+                }
             }
         }         
     }
@@ -171,21 +207,24 @@ int main()
     r=insert_a(r,12);
     r=insert_a(r,8);
     r=insert_a(r,2);
-    r=insert_a(r,25);
-    r=insert_a(r,6);
-    r=insert_a(r,14);
-    r=insert_a(r,28);
-    r=insert_a(r,17);
-    r=insert_a(r,7);
-    r=insert_a(r,52);
-    r=insert_a(r,16);
-    r=insert_a(r,48);
-    r=insert_a(r,68);
-    r=insert_a(r,3);
-    r=insert_a(r,26);
-    r=insert_a(r,29);
-    r=insert_a(r,53);
-    r=insert_a(r,55);
-    r=insert_a(r,45);    
+    // r=insert_a(r,25);
+    // r=insert_a(r,6);
+    // r=insert_a(r,14);
+    // r=insert_a(r,28);
+    // r=insert_a(r,17);
+    // r=insert_a(r,7);
+    // r=insert_a(r,52);
+    // r=insert_a(r,16);
+    // r=insert_a(r,48);
+    // r=insert_a(r,68);
+    // r=insert_a(r,3);
+    // r=insert_a(r,26);
+    // r=insert_a(r,29);
+    // r=insert_a(r,53);
+    // r=insert_a(r,55);
+    // r=insert_a(r,45);
+    printer(r.start);
+    cout<<endl;
+    free_mem(r.start);    
     return 0;
 }
