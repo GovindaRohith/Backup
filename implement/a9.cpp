@@ -13,16 +13,16 @@ class Node
     public:
     int no;
     // no of keys in Node
-    int *keys=NULL;
-    Node **child=NULL;
-    Node *parent=NULL;
+    int *keys=NULL; //array of keys
+    Node **child=NULL; //array of child nodes
+    Node *parent=NULL; //array of parent NODE
 };  
 class Root
 {
     public :
     Node *start;
 };
-void act(Node *temp,int age);
+void act(Node *temp,int age,Node *left,Node *right);
 void printer(Node *temp)
 {
     int i;
@@ -42,48 +42,71 @@ void printer(Node *temp)
 void ins_spilt(Node *temp)
 {
     //0 1       2         3 4  
-    int i,j,age=temp->keys[(N+1)/2+i];
-    Node *parent=temp->parent,*entry=new Node();
+    Node *entry=new Node(),*parent=temp->parent;
+    int i,fel=temp->keys[(N-1)/2];
+    for(i=0;i<N;i++)
+    {
+        entry->keys[i]=0;
+        entry->child[i]=NULL;
+    }
+    entry->child[i+1]=NULL;
     for(i=0;i<(N-1)/2;i++)
     {
         entry->keys[i]=temp->keys[(N+1)/2+i];
+        entry->child[i]=temp->child[(N+1)/2+i];
     }
-    temp->no=temp->no-(N-1)/2;
+    entry->child[i]=temp->child[(N+1)/2+i];
     entry->no=(N-1)/2;
-    entry->parent=temp->parent;
-    //
-    for(i=0;i<parent->no-1;i++)
+    for(i=(N-1)/2+1;i<N;i++)
     {
-        if(age>=parent->keys[i]&&age<=parent->keys[i+1])
-        {
-            for(j=parent->no;j>i+1;j=j-1)
-            {
-                //equality check
-                parent->child[j]=parent->child[j-1];
-            }
-            parent->child[j]=temp;
-            parent->child[j+1]=entry;
-        }
+        temp->child[i]=NULL;
+        temp->keys[i]=0;
     }
-    //
-    act(temp->parent,temp->keys[(N-1)/2]);
+    temp->child[i]=NULL;
+    temp->no=(N-1)/2;
+    entry->parent=parent;
+    temp->parent=parent;
+    act(parent,fel,temp,entry);
 }
-void act(Node *temp,int age)
+void act(Node *temp,int age,Node *left,Node *right)
 {
     int i,j;
     //temp is a node which have to insert age
+    //left is left tree of age 
+    if(age<=temp->keys[0])
+    {
+        for(j=temp->no;j>0;j=j-1)
+        {
+            temp->keys[j]=temp->keys[j-1];
+            temp->child[j+1]=temp->child[j];
+        }
+        temp->child[j]=left;
+        temp->child[j+1]=right;
+        temp->keys[j]=age;
+    }
+    else if(age>=temp->keys[temp->no-1])
+    {
+        temp->keys[temp->no]=age;
+        temp->child[temp->no]=left;
+        temp->child[temp->no+1]=right;
+    }
+    else
+    {
     for(i=0;i<temp->no-1;i++)
     {
         if(age>=temp->keys[i]&&age<=temp->keys[i+1])
         {
             for(j=temp->no;j>i+1;j=j-1)
             {
-                //equality check
                 temp->keys[j]=temp->keys[j-1];
+                temp->child[j+1]=temp->child[j];
             }
+            temp->child[j]=left;
+            temp->child[j+1]=right;
             temp->keys[j]=age;
-            
+            break;
         }
+    }
     }
     temp->no++;
     if(temp->no==N) ins_spilt(temp);
@@ -92,9 +115,32 @@ Root insert_a(Root r,int age)
 {
     Node *temp=r.start;
     int i;
-    //arr
+    if(temp==NULL)
+    {
+        Node *entry=new Node();
+        for(i=0;i<N;i++)
+        {
+            entry->keys[i]=0;
+            entry->child[i]=NULL;
+        }
+        entry->child[i+1]=NULL;
+        entry->keys[0]=age;
+        r.start=entry;
+        return r;
+    }
+    //finds node in which the age should be inserted
     while (temp!=NULL)
     {
+        if(age<temp->keys[0])
+        {
+            if(temp->child[0]!=NULL) temp=temp->child[0];
+            else break;
+        }
+        if(age>temp->keys[temp->no-1])
+        {
+            if(temp->child[temp->no]!=NULL) temp=temp->child[temp->no];
+            else break;
+        }
         for(i=0;i<temp->no-1;i++)
         {
             if(age>=temp->keys[i]&&age<=temp->keys[i+1])
@@ -102,19 +148,9 @@ Root insert_a(Root r,int age)
                 if(temp->child[i]!=NULL) temp=temp->child[i];
                 else break;
             }
-        }
-        if(age<temp->keys[0])
-        {
-            if(temp->child[0]!=NULL) temp=temp->child[0];
-            else break;
-        } 
-        else
-        {
-            if(temp->child[temp->no]!=NULL) temp=temp->child[temp->no];
-            else break;
-        }
+        }         
     }
-    act(temp,age);
+    act(temp,age,NULL,NULL);
     return r;
 }
 bool search_b(Root r,int age)
@@ -127,6 +163,29 @@ Root delete_c(Root r,int age)
 }
 int main()
 {
-
+    //1 12 8 2 25 6 14 28 17 7 52 16
+    //48 68 3 26 29 53 55 45
+    Root r;
+    r.start=NULL;
+    r=insert_a(r,1);
+    r=insert_a(r,12);
+    r=insert_a(r,8);
+    r=insert_a(r,2);
+    r=insert_a(r,25);
+    r=insert_a(r,6);
+    r=insert_a(r,14);
+    r=insert_a(r,28);
+    r=insert_a(r,17);
+    r=insert_a(r,7);
+    r=insert_a(r,52);
+    r=insert_a(r,16);
+    r=insert_a(r,48);
+    r=insert_a(r,68);
+    r=insert_a(r,3);
+    r=insert_a(r,26);
+    r=insert_a(r,29);
+    r=insert_a(r,53);
+    r=insert_a(r,55);
+    r=insert_a(r,45);    
     return 0;
 }
