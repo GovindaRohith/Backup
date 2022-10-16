@@ -216,6 +216,38 @@ Root insert(Root e,int a)
     }
     return e;
 }
+bool search_b(Root e,int age)
+{
+    if(e.start==NULL) 
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+        return false;
+    }
+    Node *temp=e.start;
+    while (temp!=NULL)
+    {
+        if(age>temp->age)
+        {
+            if(temp->right==NULL) break;
+            else temp=temp->right;
+        }
+        else if(age==temp->age)
+        {
+            //Prints when node is found
+            cout<<"*** Requested details ***"<<endl;
+            cout<<"Age            :"<<temp->age<<endl;
+            cout<<"***********************"<<endl;
+            return true;
+        } 
+        else
+        {
+            if(temp->left==NULL) break;
+            else temp=temp->left;
+        }
+    }
+    cout<<"*** Not found ****"<<endl;
+    return 0;
+}
 int main()
 {
     Root r;
@@ -231,6 +263,7 @@ int main()
     r=insert(r,6);
     r=insert(r,8);
     r=insert(r,12);
+    search_b(r,10);
     post(r.start);
     cout<<endl;
     free_mem(r.start);

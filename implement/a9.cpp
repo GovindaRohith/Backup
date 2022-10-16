@@ -23,7 +23,7 @@ class Root
     public :
     Node *start;
 };
-void act(Node *temp,int age,Node *left,Node *right);
+Root act(Root r,Node *temp,int age,Node *left,Node *right);
 void printer(Node *temp)
 {
     int i;
@@ -42,6 +42,23 @@ void printer(Node *temp)
         printer(temp->child[i]);
     }
     }
+}
+Node * creator()
+{
+    Node *entry=new Node();
+    int *arr,i;
+    arr=(int *)malloc(sizeof(int)*N);
+    Node **child;
+    child=(Node **)malloc(sizeof(Node *)*(N+1));
+    entry->keys=arr;
+    entry->child=child;
+    for(i=0;i<N;i++)
+    {
+        entry->keys[i]=0;
+        entry->child[i]=NULL;
+    }
+    entry->child[i]=NULL;
+    return entry;
 }
 void free_mem(Node *temp)
 {
@@ -64,17 +81,12 @@ void free_mem(Node *temp)
     delete temp;
     }
 }
-void ins_spilt(Node *temp)
+Root ins_spilt(Root r,Node *temp)
 {
     //0 1       2         3 4  
-    Node *entry=new Node(),*parent=temp->parent;
+    Node *entry,*parent=temp->parent;
     int i,fel=temp->keys[(N-1)/2];
-    for(i=0;i<N;i++)
-    {
-        entry->keys[i]=0;
-        entry->child[i]=NULL;
-    }
-    entry->child[i+1]=NULL;
+    entry=creator();
     for(i=0;i<(N-1)/2;i++)
     {
         entry->keys[i]=temp->keys[(N+1)/2+i];
@@ -91,13 +103,26 @@ void ins_spilt(Node *temp)
     temp->no=(N-1)/2;
     entry->parent=parent;
     temp->parent=parent;
-    act(parent,fel,temp,entry);
+    return act(r,parent,fel,temp,entry);
 }
-void act(Node *temp,int age,Node *left,Node *right)
+Root act(Root r,Node *temp,int age,Node *left,Node *right)
 {
     int i,j;
     //temp is a node which have to insert age
     //left is left tree of age 
+    if(temp==NULL)
+    {
+        Node *entry;
+        entry=creator();
+        entry->no=1;
+        entry->keys[0]=age;
+        entry->child[0]=left;
+        entry->child[1]=right;
+        r.start=entry;
+        return r;
+    }
+    else
+    {
     if(age<=temp->keys[0])
     {
         for(j=temp->no;j>0;j=j-1)
@@ -134,7 +159,9 @@ void act(Node *temp,int age,Node *left,Node *right)
     }
     }
     temp->no++;
-    if(temp->no==N) ins_spilt(temp);
+    if(temp->no==N) return ins_spilt(r,temp);
+    return r;
+    }
 }
 Root insert_a(Root r,int age)
 {
@@ -142,19 +169,8 @@ Root insert_a(Root r,int age)
     int i;
     if(temp==NULL)
     {
-        Node *entry=new Node();
-        int *arr;
-        arr=(int *)malloc(sizeof(int)*N);
-        Node **child;
-        child=(Node **)malloc(sizeof(Node *)*(N+1));
-        entry->keys=arr;
-        entry->child=child;
-        for(i=0;i<N;i++)
-        {
-            entry->keys[i]=0;
-            entry->child[i]=NULL;
-        }
-        entry->child[i]=NULL;
+        Node *entry;
+        entry=creator();
         entry->keys[0]=age;
         r.start=entry;
         entry->no=1;
@@ -180,14 +196,12 @@ Root insert_a(Root r,int age)
                 if(temp->child[i]!=NULL) temp=temp->child[i];
                 else 
                 {
-                    act(temp,age,NULL,NULL);
-                    return r;  
+                    return act(r,temp,age,NULL,NULL);
                 }
             }
         }         
     }
-    act(temp,age,NULL,NULL);
-    return r;
+    return act(r,temp,age,NULL,NULL);
 }
 bool search_b(Root r,int age)
 {
@@ -207,11 +221,11 @@ int main()
     r=insert_a(r,12);
     r=insert_a(r,8);
     r=insert_a(r,2);
-    // r=insert_a(r,25);
-    // r=insert_a(r,6);
-    // r=insert_a(r,14);
-    // r=insert_a(r,28);
-    // r=insert_a(r,17);
+    r=insert_a(r,25);   
+    r=insert_a(r,6);
+    r=insert_a(r,14);
+    r=insert_a(r,28);
+    // r=insert_a(r,17); //bug here
     // r=insert_a(r,7);
     // r=insert_a(r,52);
     // r=insert_a(r,16);
