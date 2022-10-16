@@ -123,6 +123,7 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
     }
     else
     {
+        cout<<age<<endl;
     if(age<=temp->keys[0])
     {
         for(j=temp->no;j>0;j=j-1)
