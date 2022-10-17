@@ -118,6 +118,8 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
         entry->keys[0]=age;
         entry->child[0]=left;
         entry->child[1]=right;
+        left->parent=entry;
+        right->parent=entry;
         r.start=entry;
         return r;
     }
@@ -226,18 +228,18 @@ int main()
     r=insert_a(r,6);
     r=insert_a(r,14);
     r=insert_a(r,28);
-    // r=insert_a(r,17); //bug here
-    // r=insert_a(r,7);
-    // r=insert_a(r,52);
-    // r=insert_a(r,16);
-    // r=insert_a(r,48);
-    // r=insert_a(r,68);
-    // r=insert_a(r,3);
-    // r=insert_a(r,26);
-    // r=insert_a(r,29);
-    // r=insert_a(r,53);
-    // r=insert_a(r,55);
-    // r=insert_a(r,45);
+    r=insert_a(r,17);
+    r=insert_a(r,7);
+    r=insert_a(r,52);
+    r=insert_a(r,16);
+    r=insert_a(r,48);
+    r=insert_a(r,68);
+    r=insert_a(r,3);
+    r=insert_a(r,26);
+    r=insert_a(r,29);
+    r=insert_a(r,53);
+    r=insert_a(r,55);
+    // r=insert_a(r,45); //bug here and check for sorted array
     printer(r.start);
     cout<<endl;
     free_mem(r.start);    
