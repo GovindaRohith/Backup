@@ -104,6 +104,7 @@ Root ins_spilt(Root r,Node *temp)
         temp->keys[i]=0;
     }
     temp->child[i]=NULL;
+    temp->keys[(N-1)/2]=0;
     temp->no=(N-1)/2;
     entry->parent=parent;
     temp->parent=parent;
@@ -198,8 +199,8 @@ Root insert_a(Root r,int age)
         for(i=0;i<temp->no-1;i++)
         {
             if(age>=temp->keys[i]&&age<=temp->keys[i+1])
-            {
-                if(temp->child[i]!=NULL) temp=temp->child[i];
+            {       
+                if(temp->child[i+1]!=NULL) temp=temp->child[i+1];
                 else 
                 {
                     return act(r,temp,age,NULL,NULL);
@@ -207,11 +208,53 @@ Root insert_a(Root r,int age)
             }
         }         
     }
+    // cout<<age<<"Before"<<temp->keys[0]<<endl;
     return act(r,temp,age,NULL,NULL);
 }
 bool search_b(Root r,int age)
 {
-    return false; 
+    int i;
+    Node *temp=r.start;
+    if(temp!=NULL) //change this condition here due to multiple checks
+    {
+        while (temp!=NULL)
+        {
+        if(age>temp->keys[temp->no-1])
+        {
+            if(temp->child[temp->no]!=NULL) temp=temp->child[temp->no];
+            else break;
+        }
+        for(i=0;i<temp->no;i++)
+        {
+            if(age==temp->keys[i])
+            {
+                cout<<"Entry exists with given age"<<endl;
+                return true;
+            }
+            if(age<temp->keys[i])
+            {       
+                if(temp->child[i]!=NULL) temp=temp->child[i];
+                else 
+                {
+                    cout<<"Entry not found with given age"<<endl;
+                    return false;
+                }
+            }
+            else
+            {
+                cout<<"Entry not found with given age"<<endl;
+                return false;
+            }
+        }         
+        }
+    }
+    else
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+        return false; 
+    }
+    cout<<"Not found any entry with given age"<<endl;
+    return false;
 }
 Root delete_c(Root r,int age)
 {
@@ -234,16 +277,16 @@ int main()
     r=insert_a(r,17);
     r=insert_a(r,7);
     r=insert_a(r,52);
-    cout<<r.start->child[0]->parent->keys[0]<<"HEllo "<<endl;
-    // r=insert_a(r,16);// sorting breaks here
-    // r=insert_a(r,48);
-    // r=insert_a(r,68);
-    // r=insert_a(r,3);
-    // r=insert_a(r,26);
-    // r=insert_a(r,29);
-    // r=insert_a(r,53);
-    // r=insert_a(r,55);
-    // r=insert_a(r,45); //bug here and check for sorted array
+    r=insert_a(r,16);
+    r=insert_a(r,48);
+    r=insert_a(r,68);
+    r=insert_a(r,3);
+    r=insert_a(r,26);
+    r=insert_a(r,29);
+    r=insert_a(r,53);
+    r=insert_a(r,55);
+    r=insert_a(r,45); 
+    // search_b(r,16); test search with cases
     printer(r.start);
     cout<<endl;
     free_mem(r.start);    
