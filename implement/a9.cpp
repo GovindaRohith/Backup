@@ -42,6 +42,10 @@ void printer(Node *temp)
         printer(temp->child[i]);
     }
     }
+    else
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+    }
 }
 Node * creator()
 {
@@ -125,7 +129,6 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
     }
     else
     {
-        cout<<age<<endl;
     if(age<=temp->keys[0])
     {
         for(j=temp->no;j>0;j=j-1)
@@ -224,21 +227,22 @@ int main()
     r=insert_a(r,12);
     r=insert_a(r,8);
     r=insert_a(r,2);
-    r=insert_a(r,25);   
+    r=insert_a(r,25);       
     r=insert_a(r,6);
     r=insert_a(r,14);
     r=insert_a(r,28);
     r=insert_a(r,17);
     r=insert_a(r,7);
     r=insert_a(r,52);
-    r=insert_a(r,16);
-    r=insert_a(r,48);
-    r=insert_a(r,68);
-    r=insert_a(r,3);
-    r=insert_a(r,26);
-    r=insert_a(r,29);
-    r=insert_a(r,53);
-    r=insert_a(r,55);
+    cout<<r.start->child[0]->parent->keys[0]<<"HEllo "<<endl;
+    // r=insert_a(r,16);// sorting breaks here
+    // r=insert_a(r,48);
+    // r=insert_a(r,68);
+    // r=insert_a(r,3);
+    // r=insert_a(r,26);
+    // r=insert_a(r,29);
+    // r=insert_a(r,53);
+    // r=insert_a(r,55);
     // r=insert_a(r,45); //bug here and check for sorted array
     printer(r.start);
     cout<<endl;
