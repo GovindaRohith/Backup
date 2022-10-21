@@ -282,7 +282,7 @@ int main()
     r=insert_a(r,25);       
     r=insert_a(r,6);
     r=insert_a(r,14);
-    r=insert_a(r,28); //bug here
+    r=insert_a(r,28); 
     r=insert_a(r,17);
     r=insert_a(r,7);
     r=insert_a(r,52);
