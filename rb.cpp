@@ -1,7 +1,7 @@
 /* 
 Name = Rajulapati Bhargava Ram
 Roll = CS21BTECH11052
-    **red Black Trees**
+    Red Black Trees
 */
 #include <iostream>
 using namespace std;
@@ -42,7 +42,7 @@ struct Node* insertBST(struct Node* root, struct Node* newNode){
         else temp = temp->left;
     }
 
-    //tree is empty
+    //tree is emptptr
     if(prev == NULL){
         prev = newNode;
         return prev;
@@ -61,61 +61,68 @@ struct Node* insertBST(struct Node* root, struct Node* newNode){
 }
 
 struct Node* rotateRight(struct Node* root, struct Node* temp){
+	struct Node* parent = temp->parent;
     struct Node* ptr = temp->left;
-    //Setting right child of parent to grandparent
-    temp->left = ptr->right;
+
+	ptr->parent = temp->parent;
+	temp->parent = ptr;
+    
     if(ptr->right != NULL){
         ptr->right->parent = temp;
     }
-    //Setting parents of parent and grandparent
-    ptr->parent = temp->parent;
-    if(temp->parent == NULL){
-        root = ptr;
-    }
-    else if(temp == temp->parent->left){
-        temp->parent->left = ptr;
+	temp->left = ptr->right;
+	ptr->right = temp;
+    
+    if(parent != NULL){
+		if(temp == parent->left){
+        	parent->left = ptr;
+   		}
+		else{
+			parent->right = ptr;
+		}
     }
     else{
-        temp->parent->right = ptr;
-    }
-
-    ptr->right = temp;
-    temp->parent = ptr;
+		root = ptr;
+		return root;
+	}
     return temp;
 }
 
 struct Node* rotateLeft(struct Node* root, struct Node* temp){
+	struct Node* parent = temp->parent;
     struct Node* ptr = temp->right;
-    //Setting right child of parent to grandparent
-    temp->right = ptr->left;
+
+	ptr->parent = temp->parent;
+	temp->parent = ptr;
+    
     if(ptr->left != NULL){
         ptr->left->parent = temp;
     }
-    //Setting parents of parent and grandparent
-    ptr->parent = temp->parent;
-    if(temp->parent == NULL){
-        root = ptr;
-    }
-    else if(temp == temp->parent->left){
-        temp->parent->left = ptr;
+	temp->right = ptr->left;
+	ptr->left = temp;
+    
+    if(parent != NULL){
+		if(temp == parent->left){
+        	parent->left = ptr;
+   		}
+		else{
+			parent->right = ptr;
+		}
     }
     else{
-        temp->parent->right = ptr;
-    }
-
-    ptr->left = temp;
-    temp->parent = ptr;
-
+		root = ptr;
+		return root;
+	}
     return temp;
 }
-
+  
 void swap(int &a, int &b){
     int z = a;
     a = b;
     b = z;
 }
 
-bool propertyRB(struct Node* root, struct Node* newNode){
+struct Node *propertptrRB(struct Node* root, struct Node* newNode){
 
     struct Node* par = NULL;
     struct Node* grandPar = NULL;
@@ -123,15 +130,15 @@ bool propertyRB(struct Node* root, struct Node* newNode){
     if(root==newNode) 
     {
         root->colour=Black;
-        return true;
+        return root;
     }
     //We have nothing to change when parent is Black in colour
-    while(newNode != NULL && newNode->colour != Black && newNode->parent->colour == red)
+    while(newNode != NULL && newNode->colour != Black &&newNode->parent!=NULL &&newNode->parent->colour == red)
     {
-
         par = newNode->parent;
-        if(newNode->parent!=NULL)grandPar = newNode->parent->parent;
-
+        if(newNode->parent!=NULL){
+			grandPar = newNode->parent->parent;
+		}
         //Case 1: Parent is left child
         if(par == grandPar->left){
             struct Node* uncle = grandPar->right;
@@ -153,10 +160,13 @@ bool propertyRB(struct Node* root, struct Node* newNode){
                 //Case C: newNode is right child
                 else{
                     par = rotateLeft(root, par);
+					// cout<<root->left->Age<<endl;
                     newNode = par;
                     par = newNode->parent;
                     
-                    rotateRight(root, grandPar);
+                    grandPar=rotateRight(root, grandPar);
+                    if(grandPar->parent==NULL) root=grandPar;
+                    //cout<<root->left->Age<<endl;
                     swap(par->colour, grandPar->colour);
                     newNode = par;
                 }
@@ -182,11 +192,12 @@ bool propertyRB(struct Node* root, struct Node* newNode){
                 }
                 //Case C: newNode is left child
                 else{
+                    //bug here
                     rotateRight(root, par);
                     newNode = par;
-                    par = newNode->parent;
-                    
+                    par = newNode->parent;  
                     grandPar = rotateLeft(root, grandPar);
+                    if(grandPar->parent==NULL) root=grandPar;
                     swap(par->colour, grandPar->colour);
                     newNode = par;
                 }
@@ -194,7 +205,7 @@ bool propertyRB(struct Node* root, struct Node* newNode){
         }
     }
     root->colour = Black;
-    return true;
+    return root;
 }
 
 struct Node* insertRBT(struct Node* root, int age){
@@ -202,18 +213,39 @@ struct Node* insertRBT(struct Node* root, int age){
     struct Node* nptr = newNode(age);
     //Normal BST insertion
     root=insertBST(root, nptr);
-    propertyRB(root, nptr);
+
+    root=propertptrRB(root, nptr);
 
     return root;
 }
 
-//To print the RBT in inorder recursively
+//To print the RBT in inorder recursivelptr
 void inorder(struct Node* root){
     if (root != NULL) {
         inorder(root->left);
-        cout<<root->Age<<" "<<root->colour<<endl;
+        cout<<root->Age<<"  "<<"Colour: "<<root->colour<<endl;
         inorder(root->right);
     }
+}
+
+//Search by Age
+void search(struct Node* root,int age){
+    Node* temp = root;
+    //Iterate from the root till leaves untill we find the name
+    while(temp != NULL && age != temp->Age){
+        if(age > temp->Age){
+            temp = temp->right;
+        }
+        else temp = temp->left;
+    }
+    //If we find the node with name we are searching print details
+    if(temp != NULL && age == temp->Age){
+        cout<<"\nFaculty with given age is there in the RBTree and details are "<<endl;
+        cout<<"Age        :  "<<temp->Age<<endl;
+        cout<<"Colour     :  "<<temp->colour<<endl;
+        cout<<"\n";
+    }
+    else if(temp == NULL) cout<<"\nSearch: Not found!!"<<endl;
 }
 
 int main()
@@ -226,6 +258,8 @@ int main()
     root = insertRBT(root, 5);
     // root = insertRBT(root, 12);
     // root = insertRBT(root, 0);
+    
     inorder(root);
+
     return 0;
 }

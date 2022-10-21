@@ -267,6 +267,7 @@ bool search_b(Root r,int age)
 }
 Root delete_c(Root r,int age)
 {
+    //atleast (n-1) /2 keys should be present in each node except leaf
     return r;
 }
 int main()
