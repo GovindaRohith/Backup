@@ -88,6 +88,7 @@ void free_mem(Node *temp)
 Root ins_spilt(Root r,Node *temp)
 {
     //0 1       2         3 4  
+    //left taken by temp and right taken by entry
     Node *entry,*parent=temp->parent;
     int i,fel=temp->keys[(N-1)/2];
     entry=creator();
@@ -106,8 +107,12 @@ Root ins_spilt(Root r,Node *temp)
     temp->child[i]=NULL;
     temp->keys[(N-1)/2]=0;
     temp->no=(N-1)/2;
-    entry->parent=parent;
+    entry->parent=parent; //mistake here
     temp->parent=parent;
+    for(i=0;i<=entry->no;i++)
+    {
+        if(entry->child[i]!=NULL) entry->child[i]->parent=entry;
+    }
     return act(r,parent,fel,temp,entry);
 }
 Root act(Root r,Node *temp,int age,Node *left,Node *right)
@@ -123,8 +128,8 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
         entry->keys[0]=age;
         entry->child[0]=left;
         entry->child[1]=right;
-        left->parent=entry;
-        right->parent=entry;
+        if(left!=NULL)entry->child[0]->parent=entry;
+        if(right!=NULL)entry->child[1]->parent=entry;
         r.start=entry;
         return r;
     }
@@ -140,12 +145,16 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
         temp->child[j]=left;
         temp->child[j+1]=right;
         temp->keys[j]=age;
+        if(left!=NULL)temp->child[temp->no]->parent=temp;
+        if(right!=NULL)temp->child[temp->no+1]->parent=temp;
     }
     else if(age>=temp->keys[temp->no-1])
     {
         temp->keys[temp->no]=age;
         temp->child[temp->no]=left;
         temp->child[temp->no+1]=right;
+        if(left!=NULL)temp->child[temp->no]->parent=temp;
+        if(right!=NULL)temp->child[temp->no+1]->parent=temp;
     }
     else
     {
@@ -199,7 +208,7 @@ Root insert_a(Root r,int age)
         for(i=0;i<temp->no-1;i++)
         {
             if(age>=temp->keys[i]&&age<=temp->keys[i+1])
-            {       
+            {    
                 if(temp->child[i+1]!=NULL) temp=temp->child[i+1];
                 else 
                 {
@@ -273,7 +282,7 @@ int main()
     r=insert_a(r,25);       
     r=insert_a(r,6);
     r=insert_a(r,14);
-    r=insert_a(r,28);
+    r=insert_a(r,28); //bug here
     r=insert_a(r,17);
     r=insert_a(r,7);
     r=insert_a(r,52);
