@@ -112,6 +112,7 @@ Root ins_spilt(Root r,Node *temp)
     for(i=0;i<=entry->no;i++)
     {
         if(entry->child[i]!=NULL) entry->child[i]->parent=entry;
+        else break;
     }
     return act(r,parent,fel,temp,entry);
 }
@@ -222,52 +223,223 @@ Root insert_a(Root r,int age)
 }
 bool search_b(Root r,int age)
 {
-    int i;
     Node *temp=r.start;
-    if(temp!=NULL) //change this condition here due to multiple checks
+    int i;
+    if(temp==NULL)
     {
-        while (temp!=NULL)
+        cout<<"Empty tree try to insert some data"<<endl;
+        return false;
+    }
+    while(temp!=NULL)
+    {
+        if(age<temp->keys[0]) temp=temp->child[0];
+        if(age>temp->keys[temp->no-1]) temp=temp->child[temp->no];
+        else
         {
-        if(age>temp->keys[temp->no-1])
-        {
-            if(temp->child[temp->no]!=NULL) temp=temp->child[temp->no];
-            else break;
-        }
-        for(i=0;i<temp->no;i++)
-        {
-            if(age==temp->keys[i])
+            for(i=0;i<temp->no;i++)
             {
-                cout<<"Entry exists with given age"<<endl;
-                return true;
-            }
-            if(age<temp->keys[i])
-            {       
-                if(temp->child[i]!=NULL) temp=temp->child[i];
-                else 
+                if(age==temp->keys[i])
                 {
-                    cout<<"Entry not found with given age"<<endl;
-                    return false;
+                    cout<<"Found date with age  "<<age<<endl;
+                    return true;
+                } 
+                if(age>temp->keys[i]&&age<temp->keys[i+1])
+                {
+                    temp=temp->child[i+1];
+                    break;
                 }
             }
-            else
-            {
-                cout<<"Entry not found with given age"<<endl;
-                return false;
-            }
-        }         
         }
+    }
+    cout<<"Not found entry with given age"<<endl;
+    return false;
+}
+Node * insucc(Node *temp,int index)
+{
+    //returns NULL if no inorder successor is present
+    //index represents the index of age in temp node
+    Node *req=NULL;
+    temp=temp->child[index+1];
+    while(temp!=NULL)
+    {
+        req=temp;
+        temp=temp->child[0];
+    }
+    return req;
+}
+Node * inpre(Node *temp,int index)
+{
+    //returns NULL if no inorder predecessor is present
+    //index represents the index of age in temp node
+    Node *req=NULL;
+    temp=temp->child[index];
+    while(temp!=NULL)
+    {
+        req=temp;
+        temp=temp->child[temp->no];
+    }
+    return req;
+}
+Root merge(Root r,Node *left,Node *temp,Node *right,int index)
+{
+    //index=-1 just merge no need for delete
+    //any other delete element in that index of temp
+    //     parent
+    // left and right  and merge untill proper trees arrives
+    //      parent
+    //  fir        sec  --> fir parent sec  
+    return r;
+}
+Root case_sep(Root r,Node *temp,int index)
+{
+    //assume leaf only comes here
+    //pairin to be deleted number is greater then parent[pairin]
+    int nright=0,nleft=0,i,pairin=0;
+    Node *right=NULL,*left=NULL,*parent=temp->parent;
+    if(parent==NULL)
+    {
+        //internal node case here swapping
+        cout<<"Swapping here"<<endl;
+        return r;
+    }
+    for(i=0;i<parent->no;i++)
+    {
+        if(temp->keys[index]<=parent->keys[i]) break;
+    }
+    if(i==0)
+    {
+        left=NULL;
+        //pairin not done
+        right=parent->child[1];
+    }
+    else if(i==parent->no)
+    {
+        right=NULL;
+        left=parent->child[parent->no];
     }
     else
     {
-        cout<<"Empty tree try to insert some data"<<endl;
-        return false; 
+        pairin=i-1;
+        left=parent->child[i-1];
+        right=parent->child[i+1];
     }
-    cout<<"Not found any entry with given age"<<endl;
-    return false;
+    if(left!=NULL) nleft=left->no;
+    if(right!=NULL) nright=right->no;
+    if(temp->child[index]!=NULL||temp->child[index+1]!=NULL)
+    {
+        //test for more than one swappings
+        //internal node case
+        Node *temp2;
+        while(temp->child[index]!=NULL||temp->child[index+1]!=NULL)
+        {
+            if(temp->child[index+1]!=NULL)
+            {
+                temp2=insucc(temp,index);
+                i=temp->keys[index];
+                temp->keys[index]=temp2->keys[0];
+                temp2->keys[0]=i;
+                index=0;
+                temp=temp2;
+            }
+            else
+            {
+                temp=inpre(temp,index);
+                i=temp->keys[index];
+                temp->keys[index]=temp2->keys[temp2->no-1];
+                temp2->keys[temp2->no-1]=i;
+                index=temp2->no-1;
+                temp=temp2;
+            }
+        }
+        return case_sep(r,temp,index);
+    }
+    else if (temp->no>=(N+1)/2)
+    {
+        //leaf with enough keys
+        for(i=index;i<temp->no-1;i++)
+        {
+            temp->keys[i]=temp->keys[i+1];
+        }
+        temp->no=temp->no-1;
+        return r;
+    }
+    else if(nleft>=(N+1)/2)
+    {
+        //left sibling have more 
+        for(i=temp->no;i>0;i=i-1)
+        {
+            temp->keys[i]=temp->keys[i-1];
+            temp->child[i+1]=temp->child[i];
+        }
+        temp->no++;
+        temp->keys[0]=parent->keys[pairin];
+        temp->child[0]=left->child[left->no];
+        if(temp->child[0]!=NULL)temp->child[0]->parent=temp;
+        parent->keys[pairin]=left->keys[left->no-1];
+        left->keys[left->no-1]=0;
+        left->child[left->no]=NULL;
+        left->no=left->no-1;
+        return case_sep(r,temp,index+1);
+    }
+    else if(nright>=(N+1)/2)
+    {
+        //right sibling have more
+        temp->keys[temp->no]=parent->keys[pairin+1];
+        temp->no++;
+        temp->child[temp->no]=right->child[0];
+        if(temp->child[temp->no]!=NULL) temp->child[temp->no]->parent=temp;
+        parent->keys[pairin+1]=right->keys[0];
+        for(i=0;i<right->no;i++)
+        {
+            right->keys[i]=right->keys[i+1];
+            right->child[i]=right->child[i+1];
+        }
+        right->child[i+1]=NULL;
+        right->no=right->no-1;
+        right->keys[right->no]=0;
+        return case_sep(r,temp,index);
+    }
+    else if(nleft<=(N-1)/2&&nright<=(N-1)/2)
+    {
+        return merge(r,left,temp,right,index);
+    }
+    else 
+    {
+        cout<<"Other if there...."<<endl;
+        return r;
+    }
+    return r;
 }
 Root delete_c(Root r,int age)
 {
-    //atleast (n-1) /2 keys should be present in each node except leaf
+    Node *temp=r.start;
+    int i;
+    if(temp==NULL)
+    {
+        cout<<"Empty tree try to insert some data"<<endl;
+        return r;
+    }
+    while(temp!=NULL)
+    {
+        if(age<temp->keys[0]) temp=temp->child[0];
+        if(age>temp->keys[temp->no-1]) temp=temp->child[temp->no];
+        else
+        {
+            for(i=0;i<temp->no;i++)
+            {
+                if(age==temp->keys[i])
+                {
+                    return case_sep(r,temp,i);
+                } 
+                if(age>temp->keys[i]&&age<temp->keys[i+1])
+                {
+                    temp=temp->child[i+1];
+                    break;
+                }
+            }
+        }
+    }
+    cout<<"Not found entry with given age"<<endl;
     return r;
 }
 int main()
@@ -296,9 +468,12 @@ int main()
     r=insert_a(r,53);
     r=insert_a(r,55);
     r=insert_a(r,45); 
-    // search_b(r,16); test search with cases
+    r=delete_c(r,7);
+    r=delete_c(r,8);
+    r=delete_c(r,48); 
     printer(r.start);
     cout<<endl;
+    // search_b(r,17);
     free_mem(r.start);    
     return 0;
 }
