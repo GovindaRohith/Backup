@@ -318,9 +318,9 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
     //  fir        sec  --> fir parent sec 
     Node *parent=temp->parent;
     int i; 
+    int conc=0,iso;
     if(left!=NULL)
     {
-        int conc=0,iso;
         for(i=0;i<parent->no;i++)
         {
             if(parent->child[i]==left&&parent->child[i+1]==temp)
@@ -362,16 +362,91 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
     }
     else if(right!=NULL)
     {
-
+        return merge(r,temp,right,right_founder(right));
     }
     else
     {
-        //left and right are not there
+        //both left and right are NULL
+        for(i=0;i<=parent->no;i++)
+        {
+            if(parent->child[i]==temp) break;
+        }
+        conc=i;
+        temp->keys[temp->no]=parent->keys[i];
+        temp->no++;
+        for(i=conc;i<parent->no-1;i++)
+        {
+            parent->keys[i]=parent->keys[i+1];
+            parent->child[i+1]=parent->child[i+2];
+        }
+        parent->no=parent->no-1;
+        if(parent->no==0)
+        {
+            destroyer(parent);
+            r.start=temp;
+            temp->parent=NULL;
+            return r;
+        }
     }
     if(parent->no<(N-1)/2)
     {
-        return merge(r,left_founder(parent),parent,right_founder(parent));
-        //siblings conditions here
+        int nleft,nright;
+        left=left_founder(parent),right=right_founder(parent);
+        temp=parent;
+        parent=temp->parent;
+        if(parent!=NULL)
+        {
+            for(i=0;i<=parent->no;i++)
+            {
+                if(parent->child[i]==temp) break;
+            }
+            conc=i-1;
+        }
+        if(left!=NULL) nleft=left->no;
+        if(right!=NULL) nright=right->no;
+        if(temp->no>=(N-1)/2||temp==r.start) return r;
+        else if(nleft>=(N+1)/2)
+        {
+            //borrow left sibling case
+            //parent   0 1 2 3 
+            //child   A B C D E
+            //if temp=D then conc->2
+            for(i=temp->no;i>0;i=i-1)
+            {
+                temp->keys[i]=temp->keys[i-1];
+                temp->child[i+1]=temp->child[i];
+            }
+            temp->child[i+1]=temp->child[i];
+            temp->keys[0]=parent->keys[conc];
+            temp->child[0]=left->child[nleft];  
+            if(temp->child[0]!=NULL) temp->child[0]->parent=temp;
+            temp->no++; //temp node assign complete
+            parent->keys[conc]=left->keys[nleft-1]; //parent assign complete
+            left->keys[nleft-1]=0;
+            left->child[nleft]=NULL;
+            left->no=left->no-1; //left assignment complete
+            return r;
+        }
+        else if(nright>=(N+1)/2)
+        {
+            temp->keys[temp->no]=parent->keys[conc+1];
+            temp->no++;
+            temp->child[temp->no]=right->child[0];
+            if(temp->child[temp->no]!=NULL)temp->child[temp->no]->parent=temp;
+            //temp assignment complete
+            parent->keys[conc+1]=right->keys[0]; //parent assign comp
+            for(i=0;i<nright;i++)
+            {
+                right->keys[i]=right->keys[i+1];
+                right->child[i]=right->child[i+1];
+            }
+            right->child[i]=right->child[i+1];
+            right->keys[nright-1]=0;
+            right->keys[nright]=NULL;
+            right->no=right->no-1; //right assignment complete
+            return r;
+        }
+        else return merge(r,left,temp,right);
     } 
     return r;
 }
