@@ -64,6 +64,12 @@ Node * creator()
     entry->child[i]=NULL;
     return entry;
 }
+void destroyer(Node *temp)
+{
+    free(temp->keys);
+    free(temp->child);
+    delete temp;
+}
 void free_mem(Node *temp)
 {
     int i;
@@ -280,14 +286,93 @@ Node * inpre(Node *temp,int index)
     }
     return req;
 }
-Root merge(Root r,Node *left,Node *temp,Node *right,int index)
+Node * left_founder(Node *temp)
+{
+    int i;
+    Node *parent=temp->parent;
+    for(i=0;i<=parent->no;i++)
+    {
+        if(parent->child[i]==temp) break;
+    }
+    if(i==0) return NULL;
+    else return parent->child[i-1];
+}
+Node * right_founder(Node *temp)
+{
+    int i;
+    Node *parent=temp->parent;
+    for(i=0;i<=parent->no;i++)
+    {
+        if(parent->child[i]==temp) break;
+    }
+    if(i==parent->no)   return NULL;
+    else return parent->child[i+1];
+}
+Root merge(Root r,Node *left,Node *temp,Node *right)
 {
     //index=-1 just merge no need for delete
     //any other delete element in that index of temp
     //     parent
     // left and right  and merge untill proper trees arrives
     //      parent
-    //  fir        sec  --> fir parent sec  
+    //  fir        sec  --> fir parent sec 
+    Node *parent=temp->parent;
+    int i; 
+    if(left!=NULL)
+    {
+        int conc=0,iso;
+        for(i=0;i<parent->no;i++)
+        {
+            if(parent->child[i]==left&&parent->child[i+1]==temp)
+            {
+                conc=i;
+                break;
+            }
+        }
+        iso=parent->keys[conc];
+        for(i=conc;i<parent->no-1;i++)
+        {
+            parent->keys[i]=parent->keys[i+1];
+            parent->child[i+1]=parent->child[i+2];
+        }
+        parent->keys[i]=0; 
+        parent->child[i+1]=NULL;
+        parent->no=parent->no-1;
+        //parent assignment done here
+        left->keys[left->no]=iso;
+        left->no++;
+        for(i=0;i<temp->no;i++)
+        {
+            left->keys[i+left->no]=temp->keys[i];
+            left->child[i+left->no]=temp->child[i];
+            if(left->child[i+left->no]!=NULL)left->child[i+left->no]->parent=left;
+        }
+        left->child[i+left->no]=temp->child[i+left->no];
+        if(left->child[i+left->no]!=NULL)left->child[i+left->no]->parent=left;
+        left->no=left->no+temp->no;
+        //left totally assigned complete!!!
+        destroyer(temp);
+        if(parent->no==0)
+        {
+            destroyer(parent);
+            r.start=left;
+            left->parent=NULL;
+            return r;
+        }   
+    }
+    else if(right!=NULL)
+    {
+
+    }
+    else
+    {
+        //left and right are not there
+    }
+    if(parent->no<(N-1)/2)
+    {
+        return merge(r,left_founder(parent),parent,right_founder(parent));
+        //siblings conditions here
+    } 
     return r;
 }
 Root case_sep(Root r,Node *temp,int index)
@@ -309,7 +394,7 @@ Root case_sep(Root r,Node *temp,int index)
     if(i==0)
     {
         left=NULL;
-        //pairin not done
+        //pairin not needed
         right=parent->child[1];
     }
     else if(i==parent->no)
@@ -401,7 +486,16 @@ Root case_sep(Root r,Node *temp,int index)
     }
     else if(nleft<=(N-1)/2&&nright<=(N-1)/2)
     {
-        return merge(r,left,temp,right,index);
+        for(i=index;i<temp->no-1;i++)
+        {
+            temp->keys[i]=temp->keys[i+1];
+            temp->child[i]=temp->child[i+1];
+        }
+        temp->child[i]=temp->child[i+1];
+        temp->keys[i]=0;
+        temp->child[i+1]=NULL;
+        temp->no=temp->no-1; //deletes req node
+        return merge(r,left,temp,right);
     }
     else 
     {
