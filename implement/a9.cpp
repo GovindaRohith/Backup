@@ -323,12 +323,9 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
     {
         for(i=0;i<parent->no;i++)
         {
-            if(parent->child[i]==left&&parent->child[i+1]==temp)
-            {
-                conc=i;
-                break;
-            }
+            if(parent->child[i]==left&&parent->child[i+1]==temp) break;
         }
+        conc=i;
         iso=parent->keys[conc];
         for(i=conc;i<parent->no-1;i++)
         {
@@ -660,10 +657,28 @@ int main()
     r=insert_a(r,45); 
     r=insert_a(r,10);
     r=insert_a(r,11);
-    r=delete_c(r,2); 
-    r=delete_c(r,7);
-    r=delete_c(r,6);
-    r=delete_c(r,3);//bug here
+    r=delete_c(r,1);
+    r=delete_c(r,12); //bug here
+    // r=delete_c(r,8);// bug here
+    // r=delete_c(r,2); //bug here
+    // r=delete_c(r,25);       
+    // r=delete_c(r,6);
+    // r=delete_c(r,14);
+    // r=delete_c(r,28); 
+    // r=delete_c(r,17);
+    // r=delete_c(r,7);
+    // r=delete_c(r,52);
+    // r=delete_c(r,16);
+    // r=delete_c(r,48);
+    // r=delete_c(r,68);
+    // r=delete_c(r,3);
+    // r=delete_c(r,26);
+    // r=delete_c(r,29);
+    // r=delete_c(r,53);
+    // r=delete_c(r,55);
+    // r=delete_c(r,45); 
+    // r=delete_c(r,10);
+    // r=delete_c(r,11);
     printer(r.start);
     cout<<endl;
     // search_b(r,17);
