@@ -347,16 +347,16 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
             left->child[i+left->no]=temp->child[i];
             if(left->child[i+left->no]!=NULL)left->child[i+left->no]->parent=left;
         }
-        left->child[i+left->no]=temp->child[i+left->no];
+        left->child[i+left->no]=temp->child[i];
         if(left->child[i+left->no]!=NULL)left->child[i+left->no]->parent=left;
         left->no=left->no+temp->no;
         //left totally assigned complete!!!
         destroyer(temp);
         if(parent->no==0)
         {
-            destroyer(parent);
             r.start=left;
             left->parent=NULL;
+            destroyer(parent);
             return r;
         }   
     }
@@ -390,7 +390,7 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
     }
     if(parent->no<(N-1)/2)
     {
-        int nleft,nright;
+        int nleft=0,nright=0;
         left=left_founder(parent),right=right_founder(parent);
         temp=parent;
         parent=temp->parent;
@@ -442,7 +442,7 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
             }
             right->child[i]=right->child[i+1];
             right->keys[nright-1]=0;
-            right->keys[nright]=NULL;
+            right->child[nright]=NULL;
             right->no=right->no-1; //right assignment complete
             return r;
         }
@@ -459,8 +459,29 @@ Root case_sep(Root r,Node *temp,int index)
     if(parent==NULL)
     {
         //internal node case here swapping
-        cout<<"Swapping here"<<endl;
-        return r;
+        Node *temp2;
+        while(temp->child[index]!=NULL||temp->child[index+1]!=NULL)
+        {
+            if(temp->child[index+1]!=NULL)
+            {
+                temp2=insucc(temp,index);
+                i=temp->keys[index];
+                temp->keys[index]=temp2->keys[0];
+                temp2->keys[0]=i;
+                index=0;
+                temp=temp2;
+            }
+            else
+            {
+                temp=inpre(temp,index);
+                i=temp->keys[index];
+                temp->keys[index]=temp2->keys[temp2->no-1];
+                temp2->keys[temp2->no-1]=i;
+                index=temp2->no-1;
+                temp=temp2;
+            }
+        }
+        return case_sep(r,temp,index);
     }
     for(i=0;i<parent->no;i++)
     {
@@ -637,9 +658,12 @@ int main()
     r=insert_a(r,53);
     r=insert_a(r,55);
     r=insert_a(r,45); 
+    r=insert_a(r,10);
+    r=insert_a(r,11);
+    r=delete_c(r,2); 
     r=delete_c(r,7);
-    r=delete_c(r,8);
-    r=delete_c(r,48); 
+    r=delete_c(r,6);
+    r=delete_c(r,3);//bug here
     printer(r.start);
     cout<<endl;
     // search_b(r,17);
