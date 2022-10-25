@@ -482,7 +482,7 @@ Root case_sep(Root r,Node *temp,int index)
     }
     for(i=0;i<parent->no;i++)
     {
-        if(temp->keys[index]<=parent->keys[i]) break;
+        if(temp==parent->child[i]) break;
     }
     if(i==0)
     {
@@ -588,7 +588,7 @@ Root case_sep(Root r,Node *temp,int index)
         temp->keys[i]=0;
         temp->child[i+1]=NULL;
         temp->no=temp->no-1; //deletes req node
-        return merge(r,left,temp,right);
+        return merge(r,left_founder(temp),temp,right_founder(temp));
     }
     else 
     {
@@ -658,19 +658,20 @@ int main()
     r=insert_a(r,10);
     r=insert_a(r,11);
     r=delete_c(r,1);
-    r=delete_c(r,12); //bug here
-    // r=delete_c(r,8);// bug here
-    // r=delete_c(r,2); //bug here
-    // r=delete_c(r,25);       
-    // r=delete_c(r,6);
-    // r=delete_c(r,14);
-    // r=delete_c(r,28); 
-    // r=delete_c(r,17);
-    // r=delete_c(r,7);
-    // r=delete_c(r,52);
-    // r=delete_c(r,16);
-    // r=delete_c(r,48);
-    // r=delete_c(r,68);
+    r=delete_c(r,12); 
+    r=delete_c(r,8);
+    r=delete_c(r,2); 
+    r=delete_c(r,25);       
+    r=delete_c(r,6);
+    r=delete_c(r,14); //
+    r=delete_c(r,28); 
+    r=delete_c(r,17);
+    r=delete_c(r,7);
+    r=delete_c(r,52);
+    r=delete_c(r,16);
+    r=delete_c(r,48);
+    //FORGOT ONLY ROOT DELETE CONDITION like  1 12 -->root only del 12 
+    // r=delete_c(r,68);// bug here
     // r=delete_c(r,3);
     // r=delete_c(r,26);
     // r=delete_c(r,29);
