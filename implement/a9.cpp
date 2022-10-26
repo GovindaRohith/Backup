@@ -44,7 +44,7 @@ void printer(Node *temp)
     }
     else
     {
-        cout<<"Empty tree try to insert some data"<<endl;
+        cout<<"Empty tree try to insert some data";
     }
 }
 Node * creator()
@@ -290,6 +290,7 @@ Node * left_founder(Node *temp)
 {
     int i;
     Node *parent=temp->parent;
+    if(parent==NULL) return NULL;
     for(i=0;i<=parent->no;i++)
     {
         if(parent->child[i]==temp) break;
@@ -301,6 +302,7 @@ Node * right_founder(Node *temp)
 {
     int i;
     Node *parent=temp->parent;
+    if(parent==NULL) return NULL;
     for(i=0;i<=parent->no;i++)
     {
         if(parent->child[i]==temp) break;
@@ -455,7 +457,25 @@ Root case_sep(Root r,Node *temp,int index)
     Node *right=NULL,*left=NULL,*parent=temp->parent;
     if(parent==NULL)
     {
-        //internal node case here swapping
+        for(i=0;i<=temp->no;i++)
+        {
+            if(temp->child[i]!=NULL) break;
+        }
+        if(i==temp->no+1)
+        {
+            for(i=index;i<temp->no-1;i++)
+            {
+                temp->keys[i]=temp->keys[i+1];
+            }
+            temp->keys[i]=0;
+            temp->no=temp->no-1;
+            if(temp->no==0)
+            {
+                r.start=NULL;
+                destroyer(temp);
+            }
+            return r;
+        }
         Node *temp2;
         while(temp->child[index]!=NULL||temp->child[index+1]!=NULL)
         {
@@ -663,23 +683,22 @@ int main()
     r=delete_c(r,2); 
     r=delete_c(r,25);       
     r=delete_c(r,6);
-    r=delete_c(r,14); //
+    r=delete_c(r,14); 
     r=delete_c(r,28); 
     r=delete_c(r,17);
     r=delete_c(r,7);
     r=delete_c(r,52);
     r=delete_c(r,16);
     r=delete_c(r,48);
-    //FORGOT ONLY ROOT DELETE CONDITION like  1 12 -->root only del 12 
-    // r=delete_c(r,68);// bug here
-    // r=delete_c(r,3);
-    // r=delete_c(r,26);
-    // r=delete_c(r,29);
-    // r=delete_c(r,53);
-    // r=delete_c(r,55);
-    // r=delete_c(r,45); 
-    // r=delete_c(r,10);
-    // r=delete_c(r,11);
+    r=delete_c(r,68);// bug here
+    r=delete_c(r,3);
+    r=delete_c(r,26);
+    r=delete_c(r,29);
+    r=delete_c(r,53);
+    r=delete_c(r,55);
+    r=delete_c(r,45); 
+    r=delete_c(r,10);
+    r=delete_c(r,11);
     printer(r.start);
     cout<<endl;
     // search_b(r,17);
