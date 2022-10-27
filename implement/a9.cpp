@@ -1,3 +1,10 @@
+/*
+Code by 
+Govinda Rohith Y
+CS21BTECH11062
+Assignment-9 
+Implementation of B-Trees
+*/
 // 1.Each node contains the Age of a faculty. 
 // 2.You should implement  
 // A.Insert
@@ -6,7 +13,6 @@
 // 3.Take the value of n as five
 #include<iostream>
 #include<stdlib.h>
-// #define N 5;
 using namespace std;
 int N=5;
 class Node
@@ -513,7 +519,7 @@ Root case_sep(Root r,Node *temp,int index)
     else if(i==parent->no)
     {
         right=NULL;
-        left=parent->child[parent->no];
+        left=parent->child[parent->no-1]; //
     }
     else
     {
@@ -679,10 +685,10 @@ int main()
     r=insert_a(r,11);
     r=delete_c(r,1);
     r=delete_c(r,12); 
-    r=delete_c(r,8);
+    r=delete_c(r,8); 
     r=delete_c(r,2); 
     r=delete_c(r,25);       
-    r=delete_c(r,6); //bug here
+    r=delete_c(r,6); 
     r=delete_c(r,14); 
     r=delete_c(r,28); 
     r=delete_c(r,17);
@@ -690,7 +696,7 @@ int main()
     r=delete_c(r,52);
     r=delete_c(r,16);
     r=delete_c(r,48);
-    r=delete_c(r,68);
+    r=delete_c(r,68);  
     r=delete_c(r,3);
     r=delete_c(r,26);
     r=delete_c(r,29);
