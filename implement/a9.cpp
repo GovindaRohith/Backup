@@ -351,13 +351,13 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
         left->no=left->no+temp->no;
         //left totally assigned complete!!!
         destroyer(temp);
-        if(parent->no==0)
+        if(parent->no==0&&parent->parent==NULL)
         {
             r.start=left;
             left->parent=NULL;
             destroyer(parent);
             return r;
-        }   
+        } 
     }
     else if(right!=NULL)
     {
@@ -507,7 +507,7 @@ Root case_sep(Root r,Node *temp,int index)
     if(i==0)
     {
         left=NULL;
-        //pairin not needed
+        pairin=-1;
         right=parent->child[1];
     }
     else if(i==parent->no)
@@ -682,7 +682,7 @@ int main()
     r=delete_c(r,8);
     r=delete_c(r,2); 
     r=delete_c(r,25);       
-    r=delete_c(r,6);
+    r=delete_c(r,6); //bug here
     r=delete_c(r,14); 
     r=delete_c(r,28); 
     r=delete_c(r,17);
@@ -690,7 +690,7 @@ int main()
     r=delete_c(r,52);
     r=delete_c(r,16);
     r=delete_c(r,48);
-    r=delete_c(r,68);// bug here
+    r=delete_c(r,68);
     r=delete_c(r,3);
     r=delete_c(r,26);
     r=delete_c(r,29);
