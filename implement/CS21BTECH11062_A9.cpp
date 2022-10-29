@@ -240,7 +240,7 @@ Root insert_a(Root r,int age)
             }
         }         
     }
-    // cout<<age<<"Before"<<temp->keys[0]<<endl;
+    cout<<"***  Inserted Successfully ***"<<endl;
     return act(r,temp,age,NULL,NULL);
 }
 bool search_b(Root r,int age)
@@ -635,11 +635,7 @@ Root case_sep(Root r,Node *temp,int index)
         temp->no=temp->no-1; //deletes req node
         return merge(r,left_founder(temp),temp,right_founder(temp));
     }
-    else 
-    {
-        cout<<"Other if there...."<<endl;
-        return r;
-    }
+    else return r;
     return r;
 }
 Root delete_c(Root r,int age)
@@ -662,6 +658,7 @@ Root delete_c(Root r,int age)
             {
                 if(age==temp->keys[i])
                 {
+                    cout<<"*** Deleted Successfully ***"<<endl;
                     return case_sep(r,temp,i);
                 } 
                 if(age>temp->keys[i]&&age<temp->keys[i+1])
