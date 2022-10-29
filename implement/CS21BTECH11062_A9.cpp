@@ -11,29 +11,33 @@ Implementation of B-Trees
 // B.Search
 // C.Delete 
 // 3.Take the value of n as five
+//Working for N>=3 and N is ODD
 #include<iostream>
 #include<stdlib.h>
 using namespace std;
-int N=5;
+int N=5; //max no of keys per node only ODD values >=3 are allowed
 class Node
 {
+    //class to store each node in a tree
     public:
     int no;
-    // no of keys in Node
+    // current no of keys in Node
     int *keys; //array of keys
     Node **child; //array of child nodes
-    Node *parent; //array of parent NODE
+    Node *parent; //parent NODE
 };  
 class Root
 {
+    //class to store Root node
     public :
     Node *start;
 };
 Root act(Root r,Node *temp,int age,Node *left,Node *right);
 void printer(Node *temp)
 {
+    //function to traverse the tree
     int i;
-    if(temp!=NULL) //change this condition here due to multiple checks
+    if(temp!=NULL) 
     {
     for(i=0;i<temp->no;i++)
     {
@@ -50,11 +54,13 @@ void printer(Node *temp)
     }
     else
     {
+        //case when tree is empty
         cout<<"Empty tree try to insert some data";
     }
 }
 Node * creator()
 {
+    //function to crate a new node and returns it
     Node *entry=new Node();
     int *arr,i;
     arr=(int *)malloc(sizeof(int)*N);
@@ -72,6 +78,7 @@ Node * creator()
 }
 void destroyer(Node *temp)
 {
+    //function to free allocated memory for each node
     free(temp->keys);
     free(temp->child);
     delete temp;
@@ -99,6 +106,7 @@ void free_mem(Node *temp)
 }
 Root ins_spilt(Root r,Node *temp)
 {
+    //function to split node according to alogorithm
     //0 1       2         3 4  
     //left taken by temp and right taken by entry
     Node *entry,*parent=temp->parent;
@@ -130,6 +138,7 @@ Root ins_spilt(Root r,Node *temp)
 }
 Root act(Root r,Node *temp,int age,Node *left,Node *right)
 {
+    //function to seperates to in each case for insertion 
     int i,j;
     //temp is a node which have to insert age
     //left is left tree of age 
@@ -194,6 +203,7 @@ Root act(Root r,Node *temp,int age,Node *left,Node *right)
 }
 Root insert_a(Root r,int age)
 {
+    //function to find to node for which the given age needs to be inserting
     Node *temp=r.start;
     int i;
     if(temp==NULL)
@@ -235,6 +245,8 @@ Root insert_a(Root r,int age)
 }
 bool search_b(Root r,int age)
 {
+    //function returns true if there exists a node with given age
+    //else returns false
     Node *temp=r.start;
     int i;
     if(temp==NULL)
@@ -252,7 +264,7 @@ bool search_b(Root r,int age)
             {
                 if(age==temp->keys[i])
                 {
-                    cout<<"Found date with age  "<<age<<endl;
+                    cout<<"Found entry with age  "<<age<<endl;
                     return true;
                 } 
                 if(age>temp->keys[i]&&age<temp->keys[i+1])
@@ -269,6 +281,7 @@ bool search_b(Root r,int age)
 Node * insucc(Node *temp,int index)
 {
     //returns NULL if no inorder successor is present
+    //else returns its inorder successor
     //index represents the index of age in temp node
     Node *req=NULL;
     temp=temp->child[index+1];
@@ -282,6 +295,7 @@ Node * insucc(Node *temp,int index)
 Node * inpre(Node *temp,int index)
 {
     //returns NULL if no inorder predecessor is present
+    //else returns its inorder predecessor
     //index represents the index of age in temp node
     Node *req=NULL;
     temp=temp->child[index];
@@ -294,6 +308,7 @@ Node * inpre(Node *temp,int index)
 }
 Node * left_founder(Node *temp)
 {
+    //returns left sibling of a given node temp
     int i;
     Node *parent=temp->parent;
     if(parent==NULL) return NULL;
@@ -306,6 +321,7 @@ Node * left_founder(Node *temp)
 }
 Node * right_founder(Node *temp)
 {
+    //returns left sibling of a given node temp
     int i;
     Node *parent=temp->parent;
     if(parent==NULL) return NULL;
@@ -318,6 +334,8 @@ Node * right_founder(Node *temp)
 }
 Root merge(Root r,Node *left,Node *temp,Node *right)
 {
+    //function to merge the nodes with less than min number of keys
+    //untill the B-Trees properties satisfies
     //index=-1 just merge no need for delete
     //any other delete element in that index of temp
     //     parent
@@ -457,6 +475,7 @@ Root merge(Root r,Node *left,Node *temp,Node *right)
 }
 Root case_sep(Root r,Node *temp,int index)
 {
+    //function to seperate into cases for deletion according to algorithm
     //assume leaf only comes here
     //pairin to be deleted number is greater then parent[pairin]
     int nright=0,nleft=0,i,pairin=0;
@@ -625,6 +644,7 @@ Root case_sep(Root r,Node *temp,int index)
 }
 Root delete_c(Root r,int age)
 {
+    //Find node for which age is to be deleted 
     Node *temp=r.start;
     int i;
     if(temp==NULL)
@@ -657,9 +677,12 @@ Root delete_c(Root r,int age)
 }
 int main()
 {
-    //1 12 8 2 25 6 14 28 17 7 52 16
-    //48 68 3 26 29 53 55 45
-    Root r;
+    if(N<3||N%2==0)
+    {
+        cout<<"Value of N should be ODD and greater than or equal to 3"<<endl;
+        return 0;
+    }
+    Root r; //declare a root node with NULL
     r.start=NULL;
     r=insert_a(r,1);
     r=insert_a(r,12);
@@ -683,6 +706,7 @@ int main()
     r=insert_a(r,45); 
     r=insert_a(r,10);
     r=insert_a(r,11);
+    search_b(r,17);
     r=delete_c(r,1);
     r=delete_c(r,12); 
     r=delete_c(r,8); 
@@ -707,7 +731,6 @@ int main()
     r=delete_c(r,11);
     printer(r.start);
     cout<<endl;
-    // search_b(r,17);
     free_mem(r.start);    
     return 0;
 }
