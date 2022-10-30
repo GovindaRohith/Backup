@@ -32,18 +32,9 @@ bool coin()
 {
     // true for even for head returns 1
     // false for odd for tail returns 0
-    //  srand(time(0)); //UNCOMMENT HERE
-    if (rand() % 2 == 0)
-    {
-        cout<<"Head"<<endl;
-        return true;
-    } 
-    else
-    {
-        cout<<"Tails"<<endl;
-        return false;
-    }
-    
+    // srand(time(0)); //UNCOMMENT HERE
+    if (rand() % 2 == 0) return true;
+    else return false;
 }
 void llprint(Node *head)
 {
@@ -84,6 +75,14 @@ Node *llcreate()
     entry1->top = NULL;
     entry1->bottom = NULL;
     return entry;
+}
+void ddl_insert(Node *entry,Node *temp)
+{
+    //entry && temp in order
+    entry->left = temp->left;
+    temp->left->right = entry;
+    entry->right = temp;
+    temp->left = entry;
 }
 Collection create(Collection c)
 {
@@ -136,11 +135,11 @@ Collection ins_coin(Collection c, Node *temp)
         }
         temp2 = temp2->top;
         // cout<<temp2->left->age<<endl;
-        // ddl_insert(entry, temp2);//
+        ddl_insert(entry, temp2);
         utemp = utemp->prev;
         temp = entry;
     }
-    if (utemp == NULL)
+    if (utemp==NULL||utemp->prev == NULL)
     {
         //create an empty linked list case
         Unode *old = c.start;
@@ -148,6 +147,7 @@ Collection ins_coin(Collection c, Node *temp)
         uentry->curhead = llcreate();
         uentry->next = old;
         uentry->prev = NULL;
+        old->prev=uentry;
         old->curhead->top = uentry->curhead;
         temp2 = old->curhead->right; // temp2 represents +inf from old node
         while (temp2->right != NULL)
@@ -205,15 +205,16 @@ Collection insert_a(Collection c, int age)
         // return ins_coin(c,entry);
         while (temp != NULL)
         {
-            if (age < temp->age || (temp->right != NULL && temp->right->right == NULL))
+            if (age < temp->age || (temp->right != NULL && temp->right->right == NULL&&temp->right->left->left==NULL))
             {
                 if (temp->bottom == NULL)
                 {
-                    entry->left = temp->left;
-                    temp->left->right = entry;
-                    entry->right = temp;
-                    temp->left = entry;
-                    return ins_coin(c, entry);
+                    if(age<temp->age&&age>temp->left->age)
+                    {
+                        ddl_insert(entry,temp);
+                        return ins_coin(c, entry);
+                    }
+                    else temp=temp->left;
                 }
                 else temp = temp->bottom;
             }
@@ -224,6 +225,7 @@ Collection insert_a(Collection c, int age)
             else if (age == temp->age)
             {
                 cout << "Invalid entry already exists with give name" << endl;
+                return c;
             }
             else
             {
@@ -248,18 +250,18 @@ Collection delete_b(Collection c, string name)
 int main()
 {
     // 12 23 26 31 34 44 56 64 78
-    // 0 1 0 0 0 0 1 1 0 0 1 0 1 0 0 1 1 1 1 1
-    // t h t t t t h h t t h t h t t h h h h h
+    // 0 1 0  0  0  0 1 1  0  0 1 0 1 0 0 1 1 1 1 1
+    // t h t  t  t  t h h  t  t h t h t t h h h h h
     Collection c = create(c);
-    c = insert_a(c, 26);
-    c = insert_a(c, 12);
-    // c=insert_a(c,34);
-    // c=insert_a(c,56);
-    // c=insert_a(c,64);
-    // c=insert_a(c,78);
-    // c=insert_a(c,23);
-    // c=insert_a(c,31);
-    // c=insert_a(c,44);
+    c=insert_a(c,26);
+    c=insert_a(c,12);
+    c=insert_a(c,34);
+    c=insert_a(c,56);
+    c=insert_a(c,64);
+    c=insert_a(c,78);
+    c=insert_a(c,23);
+    c=insert_a(c,31);
+    c=insert_a(c,44);
     printer(c);
     free_mem(c);
     return 0;
