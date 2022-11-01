@@ -24,7 +24,7 @@ public:
 };
 class Collection
 {
-public:
+    public:
     Unode *start; // start represents first linked list which
     // of only -inf +inf
 };
@@ -32,7 +32,6 @@ bool coin()
 {
     // true for even for head returns 1
     // false for odd for tail returns 0
-    // srand(time(0)); //UNCOMMENT HERE
     if (rand() % 2 == 0) return true;
     else return false;
 }
@@ -235,23 +234,88 @@ Collection insert_a(Collection c, int age)
         utemp = utemp->next;
     }
     return c;
-    return ins_coin(c, entry);
 }
-Node *search_c(Collection c, string name)
+Node *search_c(Collection c,int age,bool isDel)
 {
-    // return NULL if not present
+    //bool isDel is only to display "Deleted successfully"
+    //as the delete function also uses the search function
+    //So for regular search the third argument should be zero
+    //return NULL if not present
     // else return node which contains
+    Unode *utemp = c.start;
+    Node *temp;
+    while (utemp != NULL) // check again
+    {
+        temp = utemp->curhead;
+        while (temp != NULL)
+        {
+            if (age < temp->age || (temp->right != NULL && temp->right->right == NULL&&temp->left==NULL))
+            {
+                if (temp->bottom == NULL)
+                {
+                    if(age<temp->age&&age>temp->left->age)
+                    {
+                        cout<<"Not Found with given name"<<endl;
+                        return NULL;
+                    }
+                    else temp=temp->left;
+                }
+                else temp = temp->bottom;
+            }
+            else if (age > temp->age)
+            {
+                temp=temp->right;
+            }
+            else if (age == temp->age)
+            {
+                if(isDel)cout<<"*** Deleted Successfully ***"<<endl;
+                else cout << "Found with given name"<< endl;
+                return temp;
+            }
+            else
+            {
+                //Just kept for syntax formation IGNORE
+            }
+        }
+        utemp = utemp->next;
+    }
+    cout<<"Not found"<<endl;
     return NULL;
 }
-Collection delete_b(Collection c, string name)
+Node *ddl_delete(Node *entry)
 {
+    //if bottom exists return that else return NULL
+    Node *temp=entry->top;
+    entry->left->right=entry->right;
+    entry->right->left=entry->left;
+    delete entry;
+    if(temp!=NULL) return temp;
+    return NULL;
+}
+Collection delete_b(Collection c, int age)
+{
+    Node *temp=search_c(c,age,1);
+    if(temp==NULL) return c;
+    while(temp->bottom!=NULL)
+    {
+        temp=temp->bottom;
+    }
+    while(temp!=NULL)
+    {
+        temp=ddl_delete(temp);
+    }
+    while(c.start->next!=NULL&&c.start->next->curhead->right->right==NULL)
+    {
+        delete c.start->curhead->right;
+        delete c.start->curhead;
+        Unode *utemp=c.start;
+        c.start=c.start->next;
+        delete utemp;
+    }
     return c;
 }
 int main()
 {
-    // 12 23 26 31 34 44 56 64 78
-    // 0 1 0  0  0  0 1 1  0  0 1 0 1 0 0 1 1 1 1 1
-    // t h t  t  t  t h h  t  t h t h t t h h h h h
     Collection c = create(c);
     c=insert_a(c,26);
     c=insert_a(c,12);
@@ -262,6 +326,17 @@ int main()
     c=insert_a(c,23);
     c=insert_a(c,31);
     c=insert_a(c,44);
+    Node *temp;
+    temp=search_c(c,78,0); //for searching make the third argument 0
+    c=delete_b(c,26);
+    c=delete_b(c,12);
+    c=delete_b(c,34);
+    c=delete_b(c,56);
+    c=delete_b(c,64);
+    c=delete_b(c,78);
+    c=delete_b(c,23);
+    c=delete_b(c,31);
+    c=delete_b(c,44);
     printer(c);
     free_mem(c);
     return 0;
