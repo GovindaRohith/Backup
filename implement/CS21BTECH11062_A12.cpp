@@ -13,7 +13,7 @@ class Node
 {
 public:
     int age;
-    // string name,gender,dept; //NOTE change here for assign
+    string name,gender,dept; 
     Node *left, *right, *top, *bottom;
 };
 class Unode
@@ -38,11 +38,17 @@ bool coin()
 void llprint(Node *head)
 {
     Node *temp = head;
-    cout << "-inf ";
+    if(head->left==NULL&&head->right->right==NULL)cout << "-inf ";
+    else cout<<"-inf"<<endl;
     temp = temp->right;
     while (temp->right != NULL)
     {
-        cout << temp->age << " ";
+        cout<<"******************"<<endl;
+        cout <<"Name      :"<< temp->name<<endl;
+        cout <<"Gender    :"<< temp->gender<<endl;
+        cout <<"Department:"<< temp->dept<<endl;
+        cout <<"Age       :"<< temp->age<<endl;
+        cout<<"******************"<<endl;
         temp = temp->right;
     }
     cout << "+inf" << endl;
@@ -53,7 +59,7 @@ void printer(Collection c)
     Unode *temp = c.start;
     for (i = 0; temp != NULL; i++)
     {
-        cout << "Linked list number " << i + 1 << ":  ";
+        cout << "Linked list number " << i + 1 << ":  "<<endl;
         llprint(temp->curhead);
         temp = temp->next;
     }
@@ -63,8 +69,8 @@ Node *llcreate()
     // creats a linked lists with -inf and +inf
     Node *entry = new Node();
     Node *entry1 = new Node();
-    entry->age = -1;   //-inf value
-    entry1->age = 100; //+inf values
+    entry->name ="a";   //-inf value
+    entry1->name = "z"; //+inf values
     entry->right = entry1;
     entry->left = NULL;
     entry->top = NULL;
@@ -124,6 +130,9 @@ Collection ins_coin(Collection c, Node *temp)
     {
         Node *entry = new Node();
         entry->age = temp->age;
+        entry->name = temp->name;
+        entry->gender = temp->gender;
+        entry->dept = temp->dept;
         entry->bottom = temp;
         entry->top = NULL;
         temp->top = entry;
@@ -160,14 +169,22 @@ Collection ins_coin(Collection c, Node *temp)
     }
     return c;
 }
-Collection insert_a(Collection c, int age)
+Collection insert_a(Collection c, string name,int age ,string gender,string dept)
 {
     // x = y: we return element(after(p))
     // x > y: we “scan forward”
     // x < y: we “drop down”
+    if(name=="a"||name=="z")
+    {
+        cout<<"Names like a and z are not allowed as they are reserved for -inf and +inf "<<endl;
+        return c;
+    } 
     Unode *utemp = c.start;
     Node *temp;
     Node *entry = new Node();
+    entry->name=name;
+    entry->dept=dept;
+    entry->gender=gender;
     entry->age = age;
     entry->bottom = NULL;
     entry->top = NULL;
@@ -204,11 +221,11 @@ Collection insert_a(Collection c, int age)
         // return ins_coin(c,entry);
         while (temp != NULL)
         {
-            if (age < temp->age || (temp->right != NULL && temp->right->right == NULL&&temp->right->left->left==NULL))
+            if (name < temp->name|| (temp->right != NULL && temp->right->right == NULL&&temp->right->left->left==NULL))
             {
                 if (temp->bottom == NULL)
                 {
-                    if(age<temp->age&&age>temp->left->age)
+                    if(name<temp->name&&name>temp->left->name)
                     {
                         ddl_insert(entry,temp);
                         return ins_coin(c, entry);
@@ -217,31 +234,37 @@ Collection insert_a(Collection c, int age)
                 }
                 else temp = temp->bottom;
             }
-            else if (age > temp->age)
+            else if (name > temp->name)
             {
                 temp=temp->right;
             }
-            else if (age == temp->age)
+            else if (name== temp->name)
             {
                 cout << "Invalid entry already exists with give name" << endl;
+                delete entry;
                 return c;
             }
             else
             {
-                //Just kept for syntax formation IGNORE
+                //Just kept for syntax completion IGNORE
             }
         }
         utemp = utemp->next;
     }
     return c;
 }
-Node *search_c(Collection c,int age,bool isDel)
+Node *search_c(Collection c,string name,bool isDel)
 {
     //bool isDel is only to display "Deleted successfully"
     //as the delete function also uses the search function
     //So for regular search the third argument should be zero
     //return NULL if not present
     // else return node which contains
+    if(name=="a"||name=="z") //as a is reserved for -inf and z is reserved for +inf
+    {
+        cout<<"Not Found with given name"<<endl;
+        return NULL;
+    } 
     Unode *utemp = c.start;
     Node *temp;
     while (utemp != NULL) // check again
@@ -249,11 +272,11 @@ Node *search_c(Collection c,int age,bool isDel)
         temp = utemp->curhead;
         while (temp != NULL)
         {
-            if (age < temp->age || (temp->right != NULL && temp->right->right == NULL&&temp->left==NULL))
+            if (name < temp->name || (temp->right != NULL && temp->right->right == NULL&&temp->left==NULL))
             {
                 if (temp->bottom == NULL)
                 {
-                    if(age<temp->age&&age>temp->left->age)
+                    if(name<temp->name&&name>temp->left->name)
                     {
                         cout<<"Not Found with given name"<<endl;
                         return NULL;
@@ -262,19 +285,27 @@ Node *search_c(Collection c,int age,bool isDel)
                 }
                 else temp = temp->bottom;
             }
-            else if (age > temp->age)
+            else if (name > temp->name)
             {
                 temp=temp->right;
             }
-            else if (age == temp->age)
+            else if (name == temp->name)
             {
                 if(isDel)cout<<"*** Deleted Successfully ***"<<endl;
-                else cout << "Found with given name"<< endl;
+                else
+                {
+                    cout<<"*** Requested Details  ****"<<endl;
+                    cout <<"Name      :"<< temp->name<<endl;
+                    cout <<"Gender    :"<< temp->gender<<endl;
+                    cout <<"Department:"<< temp->dept<<endl;
+                    cout <<"Age       :"<< temp->age<<endl;
+                    cout<<"******************"<<endl;
+                } 
                 return temp;
             }
             else
             {
-                //Just kept for syntax formation IGNORE
+                //Just kept for syntax completion IGNORE
             }
         }
         utemp = utemp->next;
@@ -292,9 +323,9 @@ Node *ddl_delete(Node *entry)
     if(temp!=NULL) return temp;
     return NULL;
 }
-Collection delete_b(Collection c, int age)
+Collection delete_b(Collection c, string name)
 {
-    Node *temp=search_c(c,age,1);
+    Node *temp=search_c(c,name,1);
     if(temp==NULL) return c;
     while(temp->bottom!=NULL)
     {
@@ -317,26 +348,26 @@ Collection delete_b(Collection c, int age)
 int main()
 {
     Collection c = create(c);
-    c=insert_a(c,26);
-    c=insert_a(c,12);
-    c=insert_a(c,34);
-    c=insert_a(c,56);
-    c=insert_a(c,64);
-    c=insert_a(c,78);
-    c=insert_a(c,23);
-    c=insert_a(c,31);
-    c=insert_a(c,44);
+    c=insert_a(c,"bran",18,"M","CSE");
+    c=insert_a(c,"cod",19,"M","CSE");
+    c=insert_a(c,"donkey",20,"M","CSE");
+    c=insert_a(c,"emp",21,"M","CSE");
+    c=insert_a(c,"food",22,"M","CSE");
+    c=insert_a(c,"gold",23,"M","CSE");
+    c=insert_a(c,"honey",24,"M","CSE");
+    c=insert_a(c,"ink",25,"M","CSE");
+    c=insert_a(c,"jump",26,"M","CSE");
     Node *temp;
-    temp=search_c(c,78,0); //for searching make the third argument 0
-    c=delete_b(c,26);
-    c=delete_b(c,12);
-    c=delete_b(c,34);
-    c=delete_b(c,56);
-    c=delete_b(c,64);
-    c=delete_b(c,78);
-    c=delete_b(c,23);
-    c=delete_b(c,31);
-    c=delete_b(c,44);
+    temp=search_c(c,"a",0); //for searching make the third argument 0
+    c=delete_b(c,"donkey");
+    c=delete_b(c,"bran");
+    c=delete_b(c,"cod");
+    c=delete_b(c,"emp");
+    c=delete_b(c,"food");
+    c=delete_b(c,"gold");
+    c=delete_b(c,"honey");
+    c=delete_b(c,"ink");
+    // c=delete_b(c,"jump");
     printer(c);
     free_mem(c);
     return 0;

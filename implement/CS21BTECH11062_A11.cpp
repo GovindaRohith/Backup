@@ -1,4 +1,10 @@
 /*
+Code by
+Govinda Rohith Y
+CS21BTECH11062
+Implementation of Binomial heap (Assignment-11)
+*/
+/*
 1.  Each node contains the Age of a faculty.
 
 2.  You should implement  
@@ -10,31 +16,38 @@ C.Union
 using namespace std;
 class Node
 {
+    //Class to store each node in Binomial heap
     public:
     int key;
     Node *lchild,*right;
-    // Node *parent;
+    Node *parent;
     int degree;
 };
 class Bheap
 {
+    //Class to store starting node of heap
     public:
     Node *start;
 };
 void free_mem(Node *temp)
 {
+    //function to free memory 
     if(temp->lchild!=NULL) free_mem(temp->lchild);
     if(temp->right!=NULL) free_mem(temp->right);
     delete temp;
 }
 void heap_print(Node *temp)
 {
+    //function to print elements in each tree in a heap
+    //the order of printing is print recursively left most element 
+    //and element above and recursively print right sibling
     if(temp->lchild!=NULL) heap_print(temp->lchild);
     cout<<temp->key<<" ";
     if(temp->right!=NULL) heap_print(temp->right);
 }
 void print_func(Bheap temp)
 {
+    //function which prints heap_print according to degree
     Node *temp1=temp.start;
     if(temp1==NULL) cout<<"Empty heap try inserting some data"<<endl;
     while(temp1!=NULL)
@@ -48,17 +61,15 @@ void print_func(Bheap temp)
 }
 Bheap uni(Bheap h,Node *prev,Node *fir,Node *temp)
 {
-    //prev   fir 
-    //       temp
-    //if fir and temp is in same node
-        //temp is left of fir
+    //function which unions trees untill to 
+    //satisfy properties of Binomial heap and returns BHeap
     if(fir->degree!=temp->degree) return h;
     if(fir->key<temp->key)
     {
         temp->right=fir->lchild;
         fir->lchild=temp;
         fir->degree++;
-        // temp->parent=fir;
+        temp->parent=fir;
         if(prev==NULL) h.start=fir;
         else prev->right=fir;
         if(fir->right!=NULL&&fir->degree==fir->right->degree) return uni(h,prev,fir->right,fir);
@@ -68,7 +79,7 @@ Bheap uni(Bheap h,Node *prev,Node *fir,Node *temp)
         temp->right=fir->right;
         fir->right=temp->lchild;
         temp->lchild=fir;
-        // fir->parent=temp;
+        fir->parent=temp;
         temp->degree++;
         if(prev==NULL) h.start=temp;
         else prev->right=temp;
@@ -78,11 +89,11 @@ Bheap uni(Bheap h,Node *prev,Node *fir,Node *temp)
 }
 Bheap union_c(Bheap first,Bheap second)
 {
+    //Function to return union of two valid Binomial heaps 
     //unions untill a valid tree appears
-    //unions first and second
-    //first is bigger assume
-    if(second.start==NULL) return first;
-    if(first.start==NULL) return second;
+    //unions first with second
+    if(second.start==NULL) return first; //when second heap is empty
+    if(first.start==NULL) return second; //when both trees are empty 
     Node *temp1=first.start,*temp2=second.start,*prev=NULL,*right=NULL;
     while(temp2!=NULL) 
     {
@@ -112,19 +123,24 @@ Bheap union_c(Bheap first,Bheap second)
             {
                 right=temp2->right;
                 first=uni(first,prev,temp1,temp2);
+                while(temp1->parent!=NULL)
+                {
+                    temp1=temp1->parent;
+                }
                 temp2=right;
             }
         }
-        
     }    
     return first;
 }
 Bheap insert_a(Bheap temp,int no)
 {
+    //Inserts a number 'no' into a temproary Bheap and unions with
+    //existing temp and returns final heap
     Bheap ins;
     Node *entry = new Node();
     entry->key=no;
-    // entry->parent=NULL;
+    entry->parent=NULL;
     entry->degree=0;
     entry->lchild=NULL;
     entry->right=NULL;
@@ -134,6 +150,7 @@ Bheap insert_a(Bheap temp,int no)
 }
 Node * prev_founder(Bheap h,Node *temp)
 {
+    //function to get left sibling of a node
     Node *temp2=h.start;
     while(temp2!=NULL)
     {
@@ -144,6 +161,7 @@ Node * prev_founder(Bheap h,Node *temp)
 }
 Bheap del_min(Bheap temp)
 {
+    //Function to find and delete min node and returns a valid heap
     Node *temp1=temp.start,*min=temp1,*prev,*temp2;
     if(temp1==NULL) return temp;
     while(temp1!=NULL)
@@ -161,6 +179,7 @@ Bheap del_min(Bheap temp)
     {
         prev=temp2->right;
         bt.start=temp2;
+        temp2->parent=NULL;
         temp2->right=NULL;
         //assuming right changes in union function
         temp=union_c(temp,bt);
@@ -192,10 +211,14 @@ int main()
     h=insert_a(h,32);
     h=insert_a(h,24);
     h=insert_a(h,55);
-    Bheap b=h;
-    // h=union_c(h,b); //bug here
+    Bheap b; //Decalring second heap to test union function
+    b.start=NULL;
+    b=insert_a(b,25); //Inserting elements in second heap
+    b=insert_a(b,75);
+    b=insert_a(b,100); 
+    h=union_c(h,b); //makes union of h and b and returns to h
     h=del_min(h); 
-    h=del_min(h); 
+    h=del_min(h);  
     h=del_min(h); 
     h=del_min(h); 
     h=del_min(h); 
@@ -210,10 +233,13 @@ int main()
     h=del_min(h); 
     h=del_min(h); 
     h=del_min(h); 
+    h=del_min(h); 
+    h=del_min(h);
+    h=del_min(h);
     h=del_min(h); 
     h=del_min(h);
     h=del_min(h);
     print_func(h);
-    if(h.start!=NULL)free_mem(h.start);
+    if(h.start!=NULL)free_mem(h.start); //free allocated memory 
     return 0;
 }
