@@ -1,3 +1,9 @@
+/*
+Code By
+Govinda Rohith Y
+CS21BTECH11062
+Implementation of skip lists (Assignment-12)
+*/
 // Implementation of skipped list
 //  1.Each node contains the Age, Name, Gender, and Department of
 //  a faculty. Assume the Name is unique
