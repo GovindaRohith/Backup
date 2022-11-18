@@ -231,7 +231,7 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
             {
                 if (temp->bottom == NULL)
                 {
-                    if((name<temp->name&&name>temp->left->name)||temp->left->left==NULL||temp->right->right==NULL)
+                    if((name<temp->name&&name>temp->left->name)||temp->left->left==NULL)
                     {
                         ddl_insert(entry,temp);
                         return ins_coin(c, entry);
@@ -246,6 +246,16 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
             }
             else if (name== temp->name)
             {
+                if(temp->right==NULL)
+                {
+                   temp=c.start->curhead->right;
+                    while (temp->bottom!=NULL)
+                    {
+                        temp=temp->bottom;
+                    }
+                    ddl_insert(entry,temp);
+                    return ins_coin(c, entry); 
+                }
                 cout << "Invalid entry already exists with give name" << endl;
                 delete entry;
                 return c;
@@ -257,7 +267,14 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
         }
         utemp = utemp->next;
     }
-    return c;
+    temp=c.start->curhead->right;
+    while (temp->bottom!=NULL)
+    {
+        temp=temp->bottom;
+    }
+    ddl_insert(entry,temp);
+    return ins_coin(c, entry);
+    // return c;
 }
 Node *search_c(Collection c,string name,bool isDel)
 {
@@ -289,6 +306,25 @@ Node *search_c(Collection c,string name,bool isDel)
             else if (name > temp->name||temp->left==NULL)  temp=temp->right;
             else if (name == temp->name)
             {
+                //exp here
+                if(temp->right==NULL)
+                {
+                    if(temp->left->name==name)
+                    {
+                        cout<<"*** Requested Details  ****"<<endl;
+                        cout <<"Name      :"<< temp->left->name<<endl;
+                        cout <<"Gender    :"<< temp->left->gender<<endl;
+                        cout <<"Department:"<< temp->left->dept<<endl;
+                        cout <<"Age       :"<< temp->left->age<<endl;
+                        cout<<"******************"<<endl;
+                    }
+                    else
+                    {
+                        cout<<"Not Found with given name"<<endl;
+                        return NULL;
+                    }
+                }
+                //exp here
                 if(isDel)cout<<"*** Deleted Successfully ***"<<endl;
                 else
                 {
@@ -367,9 +403,9 @@ int main()
     c=insert_a(c,"honey",24,"M","CSE");
     c=insert_a(c,"ink",25,"M","CSE");
     c=insert_a(c,"jump",26,"M","CSE");
-    c=insert_a(c,"A",26,"M","CSE");
+    c=insert_a(c,"zzzzzzzzzzzz",26,"M","CSE");
     Node *temp;
-    temp=search_c(c,"A",0); //for searching make the third argument 0
+    temp=search_c(c,"zzzzzzzzzzzz",0); //for searching make the third argument 0
     c=delete_b(c,"A");
     c=delete_b(c,"bran");
     c=delete_b(c,"cod");
