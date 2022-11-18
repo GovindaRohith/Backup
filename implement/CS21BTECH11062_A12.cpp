@@ -17,19 +17,22 @@ Implementation of skip lists (Assignment-12)
 using namespace std;
 class Node
 {
-public:
+    //class to store indivdual node
+    public:
     int age;
     string name,gender,dept; 
     Node *left, *right, *top, *bottom;
 };
 class Unode
 {
-public:
+    //class to store heads of linked lists
+    public:
     Node *curhead;
     Unode *prev, *next;
 };
 class Collection
 {
+    //class to store head of linked lists
     public:
     Unode *start; // start represents first linked list which
     // of only -inf +inf
@@ -43,6 +46,7 @@ bool coin()
 }
 void llprint(Node *head)
 {
+    //function to print each linked list
     Node *temp = head;
     if(head->left==NULL&&head->right->right==NULL)cout << "-inf ";
     else cout<<"-inf"<<endl;
@@ -61,6 +65,7 @@ void llprint(Node *head)
 }
 void printer(Collection c)
 {
+    //function to print whole collection(Skip list)
     int i;
     Unode *temp = c.start;
     for (i = 0; temp != NULL; i++)
@@ -75,8 +80,8 @@ Node *llcreate()
     // creats a linked lists with -inf and +inf
     Node *entry = new Node();
     Node *entry1 = new Node();
-    entry->name ="a";   //-inf value
-    entry1->name = "z"; //+inf values
+    entry->name ="A";   //-inf value
+    entry1->name = "zzzzzzzzzzzz"; //+inf values
     entry->right = entry1;
     entry->left = NULL;
     entry->top = NULL;
@@ -89,7 +94,7 @@ Node *llcreate()
 }
 void ddl_insert(Node *entry,Node *temp)
 {
-    //entry && temp in order
+    //standard insertion to double linked list
     entry->left = temp->left;
     temp->left->right = entry;
     entry->right = temp;
@@ -125,6 +130,7 @@ void free_mem(Collection c)
 }
 Collection ins_coin(Collection c, Node *temp)
 {
+    //function which inserts the node according to alogorithm and returns the collection
     // temp obtained after insetion of age(which contains age)
     Unode *utemp = c.start;
     Node *temp2;
@@ -132,7 +138,7 @@ Collection ins_coin(Collection c, Node *temp)
     {
         utemp = utemp->next;
     }
-    while (coin() == 1 && utemp != NULL)
+    while (coin() == 1 && utemp != NULL&&utemp->prev != NULL)
     {
         Node *entry = new Node();
         entry->age = temp->age;
@@ -148,7 +154,6 @@ Collection ins_coin(Collection c, Node *temp)
             temp2 = temp2->right;
         }
         temp2 = temp2->top;
-        // cout<<temp2->left->age<<endl;
         ddl_insert(entry, temp2);
         utemp = utemp->prev;
         temp = entry;
@@ -177,14 +182,10 @@ Collection ins_coin(Collection c, Node *temp)
 }
 Collection insert_a(Collection c, string name,int age ,string gender,string dept)
 {
+    //Function to return a node to ins_coin to which data is to inserted 
     // x = y: we return element(after(p))
     // x > y: we “scan forward”
     // x < y: we “drop down”
-    if(name=="a"||name=="z")
-    {
-        cout<<"Names like a and z are not allowed as they are reserved for -inf and +inf "<<endl;
-        return c;
-    } 
     Unode *utemp = c.start;
     Node *temp;
     Node *entry = new Node();
@@ -217,7 +218,6 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
         utemp->curhead->right->left = entry;
         utemp->curhead->right = entry;
         c.start = temp1;
-        // return c;
         return ins_coin(c, entry);
     }
     while (utemp != NULL) // check again
@@ -231,7 +231,7 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
             {
                 if (temp->bottom == NULL)
                 {
-                    if(name<temp->name&&name>temp->left->name)
+                    if((name<temp->name&&name>temp->left->name)||temp->left->left==NULL||temp->right->right==NULL)
                     {
                         ddl_insert(entry,temp);
                         return ins_coin(c, entry);
@@ -240,7 +240,7 @@ Collection insert_a(Collection c, string name,int age ,string gender,string dept
                 }
                 else temp = temp->bottom;
             }
-            else if (name > temp->name)
+            else if (name > temp->name||temp->left==NULL)
             {
                 temp=temp->right;
             }
@@ -266,11 +266,6 @@ Node *search_c(Collection c,string name,bool isDel)
     //So for regular search the third argument should be zero
     //return NULL if not present
     // else return node which contains
-    if(name=="a"||name=="z") //as a is reserved for -inf and z is reserved for +inf
-    {
-        cout<<"Not Found with given name"<<endl;
-        return NULL;
-    } 
     Unode *utemp = c.start;
     Node *temp;
     while (utemp != NULL) // check again
@@ -282,7 +277,7 @@ Node *search_c(Collection c,string name,bool isDel)
             {
                 if (temp->bottom == NULL)
                 {
-                    if(name<temp->name&&name>temp->left->name)
+                    if((name<temp->name&&name>temp->left->name)||(temp->left->left==NULL))
                     {
                         cout<<"Not Found with given name"<<endl;
                         return NULL;
@@ -291,10 +286,7 @@ Node *search_c(Collection c,string name,bool isDel)
                 }
                 else temp = temp->bottom;
             }
-            else if (name > temp->name)
-            {
-                temp=temp->right;
-            }
+            else if (name > temp->name||temp->left==NULL)  temp=temp->right;
             else if (name == temp->name)
             {
                 if(isDel)cout<<"*** Deleted Successfully ***"<<endl;
@@ -311,7 +303,6 @@ Node *search_c(Collection c,string name,bool isDel)
             }
             else
             {
-                //Just kept for syntax completion IGNORE
             }
         }
         utemp = utemp->next;
@@ -331,6 +322,7 @@ Node *ddl_delete(Node *entry)
 }
 Collection delete_b(Collection c, string name)
 {
+    //function to return collection after search and delete data with given name
     Node *temp=search_c(c,name,1);
     if(temp==NULL) return c;
     while(temp->bottom!=NULL)
@@ -346,6 +338,18 @@ Collection delete_b(Collection c, string name)
         delete c.start->curhead->right;
         delete c.start->curhead;
         Unode *utemp=c.start;
+        if(c.start->prev!=NULL)
+        {
+            c.start->prev->curhead->bottom=c.start->next->curhead;
+            c.start->prev->curhead->right->bottom=c.start->next->curhead->right;
+            c.start->prev->next=c.start->next;
+        }
+        if(c.start->next!=NULL)
+        {
+            c.start->next->curhead->top=NULL;
+            c.start->next->curhead->right->top=NULL;
+            c.start->next->prev=c.start->prev;
+        }
         c.start=c.start->next;
         delete utemp;
     }
@@ -363,9 +367,10 @@ int main()
     c=insert_a(c,"honey",24,"M","CSE");
     c=insert_a(c,"ink",25,"M","CSE");
     c=insert_a(c,"jump",26,"M","CSE");
+    c=insert_a(c,"A",26,"M","CSE");
     Node *temp;
-    temp=search_c(c,"a",0); //for searching make the third argument 0
-    c=delete_b(c,"donkey");
+    temp=search_c(c,"A",0); //for searching make the third argument 0
+    c=delete_b(c,"A");
     c=delete_b(c,"bran");
     c=delete_b(c,"cod");
     c=delete_b(c,"emp");
@@ -373,7 +378,26 @@ int main()
     c=delete_b(c,"gold");
     c=delete_b(c,"honey");
     c=delete_b(c,"ink");
-    // c=delete_b(c,"jump");
+    c=delete_b(c,"jump");
+    c=delete_b(c,"donkey");
+    c=insert_a(c,"cod",19,"M","CSE");
+    c=insert_a(c,"donkey",20,"M","CSE");
+    c=insert_a(c,"emp",21,"M","CSE");
+    c=insert_a(c,"food",22,"M","CSE");
+    c=insert_a(c,"gold",23,"M","CSE");
+    c=insert_a(c,"honey",24,"M","CSE");
+    c=insert_a(c,"ink",25,"M","CSE");
+    c=insert_a(c,"jump",26,"M","CSE");
+    c=delete_b(c,"A");
+    c=delete_b(c,"bran");
+    c=delete_b(c,"cod");
+    c=delete_b(c,"emp");
+    c=delete_b(c,"food");
+    c=delete_b(c,"gold");
+    c=delete_b(c,"honey");
+    c=delete_b(c,"ink");
+    c=delete_b(c,"jump");
+    c=delete_b(c,"donkey");
     printer(c);
     free_mem(c);
     return 0;

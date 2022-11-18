@@ -29,6 +29,7 @@
     "**/.vscode/**"
   ],
   "files.associations": {
+    "*.sql": "sql",
     "iostream": "cpp",
     "ostream": "cpp",
     "array": "cpp",
@@ -42,6 +43,15 @@
     "deque": "cpp",
     "string": "cpp",
     "unordered_map": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "atomic": "cpp",
+    "iterator": "cpp",
+    "memory_resource": "cpp",
+    "functional": "cpp",
+    "istream": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp"
   }
 }
