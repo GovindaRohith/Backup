@@ -80,8 +80,8 @@ Node *llcreate()
     // creats a linked lists with -inf and +inf
     Node *entry = new Node();
     Node *entry1 = new Node();
-    entry->name ="A";   //-inf value
-    entry1->name = "zzzzzzzzzzzz"; //+inf values
+    entry->name ="@";   //-inf value
+    entry1->name = "{"; //+inf values
     entry->right = entry1;
     entry->left = NULL;
     entry->top = NULL;
@@ -403,27 +403,8 @@ int main()
     c=insert_a(c,"honey",24,"M","CSE");
     c=insert_a(c,"ink",25,"M","CSE");
     c=insert_a(c,"jump",26,"M","CSE");
-    c=insert_a(c,"zzzzzzzzzzzz",26,"M","CSE");
     Node *temp;
-    temp=search_c(c,"zzzzzzzzzzzz",0); //for searching make the third argument 0
-    c=delete_b(c,"A");
-    c=delete_b(c,"bran");
-    c=delete_b(c,"cod");
-    c=delete_b(c,"emp");
-    c=delete_b(c,"food");
-    c=delete_b(c,"gold");
-    c=delete_b(c,"honey");
-    c=delete_b(c,"ink");
-    c=delete_b(c,"jump");
-    c=delete_b(c,"donkey");
-    c=insert_a(c,"cod",19,"M","CSE");
-    c=insert_a(c,"donkey",20,"M","CSE");
-    c=insert_a(c,"emp",21,"M","CSE");
-    c=insert_a(c,"food",22,"M","CSE");
-    c=insert_a(c,"gold",23,"M","CSE");
-    c=insert_a(c,"honey",24,"M","CSE");
-    c=insert_a(c,"ink",25,"M","CSE");
-    c=insert_a(c,"jump",26,"M","CSE");
+    temp=search_c(c,"emp",0); //for searching make the third argument 0
     c=delete_b(c,"A");
     c=delete_b(c,"bran");
     c=delete_b(c,"cod");
